@@ -1,15 +1,14 @@
 .tasks {
-    background: linear-gradient(#f0eeee, #ffffff);
+    background: linear-gradient(#f0eeee, #ffffff 50%);
     min-height: calc(100vh - 70px);
     padding   : 100px 80px;
     display: flex;
     justify-content: space-between;
 }
 
-
 .tasks ul {
     list-style-type: none;
-    margin         : 0;
+    margin         : 0 0 25 0;
     padding        : 0 0 0 17px;
 }
 
@@ -18,7 +17,7 @@
     font-size     : 16px;
     font-weight   : 400;
     line-height   : 33px;
-    color:  #333333;
+    color:           #333333;
 }
 
 .tasks li::after {

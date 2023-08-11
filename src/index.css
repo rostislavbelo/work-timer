@@ -9,3 +9,16 @@ body {
   box-sizing: border-box;
 }
 
+button {
+  display         : block;
+  background-color: #a8b64f;
+  padding         : 15px 50px 15px 50px;
+  font-size       : 16px;
+  font-weight     : 500;
+  line-height     : 17px;
+  text-align      : center;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+

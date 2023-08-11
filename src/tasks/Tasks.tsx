@@ -1,5 +1,6 @@
 import React from 'react';
 import  './tasks.css';
+import { TaskManager } from '../TaskManager';
 
 
 export function Tasks() {
@@ -14,6 +15,7 @@ export function Tasks() {
                 <li>{"Сделайте короткий перерыв (3-5 минут)"}</li>
                 <li>{"Продолжайте работать «помидор» за «помидором», пока задача не будут выполнена. Каждые 4 «помидора» делайте длинный перерыв (15-30 минут)."}</li>
             </ul>
+            <TaskManager />
         </div>
         <div className="tasks__timer-block">
 

@@ -1,0 +1,29 @@
+.taskManager input {
+    width           : 100%;
+    max-width       : 370px;
+    height          : 55px;
+    background-color: #f4f4f4;
+    margin-bottom   : 25px;
+    padding         : 15px;
+    border          : none;
+}
+
+.taskManager input::placeholder {
+    font-size  : 16px;
+    font-weight: 300;
+    line-height: 17px;
+    color      : #999999;
+}
+
+.taskManager button {
+    display         : block;
+    background-color: #A8B64F;
+    padding         : 15px 50px 15px 50px;
+    font-size       : 16px;
+    font-weight     : 500;
+    line-height     : 17px;
+    letter-spacing  : 0em;
+    text-align      : center;
+    color: #FFFFFF;
+    border: none;
+}
