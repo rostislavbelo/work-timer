@@ -18,7 +18,6 @@ export function Tasks() {
             <TaskManager />
         </div>
         <div className="tasks__timer-block">
-
         </div>
 
     </section>

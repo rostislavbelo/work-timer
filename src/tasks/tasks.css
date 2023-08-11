@@ -1,5 +1,5 @@
 .tasks {
-    background: linear-gradient(#f0eeee, #ffffff 50%);
+    background: linear-gradient(#f0eeee, #ffffff 12%);
     min-height: calc(100vh - 70px);
     padding   : 100px 80px;
     display: flex;
@@ -45,7 +45,7 @@
 }
 
 .tasks__timer-block {
-    background-color: #333333;
+    background-color: #F4F4F4;
     width: 57%;
     height: min-content;
     min-height: 507px;
