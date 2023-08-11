@@ -1,5 +1,5 @@
 .header {
-    width: 100%;
+    max-width: 100%;
     min-height: 70px;
     display: flex;
     justify-content: space-between;
@@ -15,4 +15,13 @@
 .header__statistics {
     width: 114px;
     height: 24px;  
+}
+
+
+.header a.isActive {
+    pointer-events: none;
+}
+
+.header a:hover {
+    opacity: 0.75;
 }

@@ -1,17 +1,23 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import { Layout } from "./Layout";
 import { Header } from "./Header";
+import { Tasks } from "./tasks";
+import { Statistics } from "./statistics";
+import { BrowserRouter, Route, Routes} from "react-router-dom";
 
 function App() {
   return (
     <Layout>
-      <Header />
-      <img src={logo} className="App-logo" alt="logo" />
-      <p>
-        Проект Помодоро!
-      </p>
+      <BrowserRouter>
+        <Header />
+        <main>
+          <Routes>
+            <Route path="/" element={<Tasks />} />    
+            <Route path="/stats/" element={<Statistics />} />  
+          </Routes> 
+        </main>   
+      </BrowserRouter>
     </Layout>
   );
 }

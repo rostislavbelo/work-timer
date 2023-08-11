@@ -2,14 +2,20 @@ import React from "react";
 import "./header.css";
 import mainLogo from "../icons/mainLogo.svg"
 import statistics from "../icons/statistics.svg"
-// import { Link} from "react-router-dom";
-// import  "react-router-dom";
+import { NavLink } from "react-router-dom";
+import  "react-router-dom";
 
 export function Header() {
   return (
-    <div className="header">
-        <img src={mainLogo} className="header__logo" alt="logo" />
-        <img src={statistics} className="header__statistics" alt="statistics" />
-    </div>
+    <header className="header">
+
+        <NavLink to="/"  className={({ isActive, isPending }) => isPending ? "noActive" : isActive ? "isActive" : "" }>
+            <img src={mainLogo} className="header__logo" alt="logo" />
+        </NavLink>
+        <NavLink to="/stats/"  className={({ isActive, isPending }) => isPending ? "noActive" : isActive ? "isActive" : "" }>
+            <img src={statistics} className="header__statistics" alt="statistics" />
+        </NavLink>        
+        
+    </header>
   )
 }
