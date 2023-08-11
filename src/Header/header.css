@@ -1,0 +1,18 @@
+.header {
+    width: 100%;
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 80px 10px 82.17px;
+}
+
+.header__logo {
+    width: 205px;
+    height: 40px;
+}
+
+.header__statistics {
+    width: 114px;
+    height: 24px;  
+}
