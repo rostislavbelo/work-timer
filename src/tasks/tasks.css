@@ -6,13 +6,13 @@
     justify-content: space-between;
 }
 
-.tasks ul {
+.tasks__instructions {
     list-style-type: none;
     margin         : 0 0 25px 0;
     padding        : 0 0 0 17px;
 }
 
-.tasks li {
+.tasks__instructions li {
     position      : relative;
     font-size     : 16px;
     font-weight   : 400;
@@ -20,7 +20,7 @@
     color:           #333333;
 }
 
-.tasks li::after {
+.tasks__instructions li::after {
     position        : absolute;
     content         : "";
     width           : 5px;

@@ -8,7 +8,7 @@ export function Tasks() {
     <section className="tasks">
         <div className="tasks__task-block">
             <h1>Ура! Теперь можно начать работать:</h1>
-            <ul>
+            <ul className="tasks__instructions">
                 <li>{"Выберите категорию и напишите название текущей задачи"}</li>
                 <li>{"Запустите таймер («помидор»)"}</li>
                 <li>{"Работайте пока «помидор» не прозвонит"}</li>
