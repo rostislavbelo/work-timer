@@ -1,9 +1,14 @@
-import React, { FormEvent, useEffect, useRef} from "react";
+import React, { FormEvent, useEffect, useRef, useState} from "react";
 import "./taskManager.css";
 import { useStore } from "../store";
 import { action } from "mobx";
 import { observer } from "mobx-react-lite";
-import threeDots from "../icons/threeDots.svg"
+import threeDots from "../icons/threeDots.svg";
+import plus from "../icons/plus.svg";
+import minusGray from "../icons/plusGray.svg";
+import minus from "../icons/minus.svg";
+import pen from "../icons/pen.svg";
+import del from "../icons/delete.svg";
 import { useCloseModal } from "../hooks/useCloseModal";
 
 export const TaskManager = observer(() => {
@@ -53,6 +58,7 @@ export const TaskManager = observer(() => {
 
   useCloseModal(()=>handlerPopup(), refPopup);
 
+
   return (
     <div className="taskManager">
       <form action="#" onSubmit={handleSubmit}>
@@ -69,10 +75,23 @@ export const TaskManager = observer(() => {
                   <img src={threeDots} alt="Three dots" />
                 </button>
                 {l.popup && (<div className="taskManager__popup">
-                    <button onClick={()=>handlerPlus(l.id)}>Увеличить</button>
-                    <button onClick={()=>handlerMinus(l.id)}>Уменьшить</button>
-                    <button>Редактировать</button>
-                    <button onClick={()=>handlerDelete(l.id)}>Удалить</button>
+                    <button onClick={()=>{handlerPlus(l.id)}}> 
+                    <img src={plus} alt="Plus" />            
+                      Увеличить
+                    </button>
+                    <button onClick={()=>{handlerMinus(l.id)}} className={'pointer'+l.count}>                      
+                      {l.count > 1 && (<img src={minus} alt="Minus" />)} 
+                      {l.count === 1 && (<img src={minusGray} alt="Minus no active" />)} 
+                      Уменьшить
+                    </button>                      
+                    <button>
+                      <img src={pen} alt="Change" />
+                      Редактировать
+                    </button>
+                    <button onClick={()=>handlerDelete(l.id)}>
+                      <img src={del} alt="Delete" />
+                      Удалить
+                    </button>
                 </div>)}
               </div>
             </li>
