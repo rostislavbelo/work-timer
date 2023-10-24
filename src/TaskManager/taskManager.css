@@ -1,4 +1,4 @@
-.taskManager input {
+.taskManager form input {
     width           : 100%;
     max-width       : 370px;
     height          : 55px;
@@ -8,7 +8,7 @@
     border          : none;
 }
 
-.taskManager input::placeholder {
+.taskManager form input::placeholder {
     font-size  : 16px;
     font-weight: 300;
     line-height: 17px;
@@ -36,7 +36,7 @@
 .taskManager__task-list {
     list-style-type: none;
     padding        : 0;
-    margin         : 0;
+    margin         : 0 0 20px 0;
 }
 
 .taskManager__task {
@@ -72,6 +72,27 @@
     font-weight: 300;
     line-height: 17px;
     color      : #333333;
+    position   : relative;
+    overflow   : hidden;
+    max-width  : 81%;
+}
+
+.taskManager__title input {
+    position   : absolute;
+    left       : -3px;
+    top        : -2px;
+    font-size  : 16px;
+    font-weight: 300;
+    line-height: 17px;
+    color      : #333333;
+    width      : 102%;
+}
+
+.taskManager__title input::placeholder {
+    font-size  : 16px;
+    font-weight: 300;
+    line-height: 17px;
+    color      : #868080;
 }
 
 .taskManager__btn {
@@ -131,6 +152,12 @@
     min-height      : 36px;
     display         : flex;
     align-items     : center;
+    user-select     : none;
+    transition: opacity linear 0.2s;
+}
+
+.taskManager__popup button:hover {
+    opacity: 0.7;
 }
 
 .taskManager__popup button.pointer1 {
@@ -151,4 +178,14 @@
     left    : 0;
     top     : 0;
     z-index : -1;
+}
+
+.taskManager__totalTime {
+    font-size     : 16px;
+    font-weight   : 300;
+    line-height   : 17px;
+    text-align    : left;
+    color         : #999999;
+    text-transform: uppercase;
+    user-select     : none;
 }

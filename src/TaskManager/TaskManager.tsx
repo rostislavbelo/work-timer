@@ -15,7 +15,8 @@ export const TaskManager = observer(() => {
 
   const refInput = useRef<HTMLInputElement>(null);
   const refPopup = useRef<HTMLUListElement>(null);
-
+  const refRename = useRef<HTMLInputElement>(null);
+  
   useEffect(() => {
     if (refInput.current === null ) return;
     refInput.current.focus();
@@ -32,12 +33,12 @@ export const TaskManager = observer(() => {
       id: Date.now(),
       count: 1,
       popup: false,
+      rename: false
     }];
     if (refInput.current !== null) {
       refInput.current.value = '';
     };
     tasksStore.list = tasksStore.list.map(n => n = { ...n, popup: false});
-
   });
 
   const handlerPopup = action((id?:number) => {
@@ -56,20 +57,44 @@ export const TaskManager = observer(() => {
     tasksStore.list.map((n, index) => n.id === id ? {...tasksStore.list.splice(index, 1)} : n);
   })
 
+  const handlerRename = action((id:number) => {
+    tasksStore.list = tasksStore.list.map(n => n.id === id ? { ...n, rename: !n.rename} : n);
+    tasksStore.list = tasksStore.list.map(n => n = { ...n, popup: false});
+    if (refRename.current?.value === undefined) return;
+    tasksStore.list = tasksStore.list.map(n => n.id === id && refRename.current?.value !== "" ? { ...n, title: String(refRename.current?.value)} : n);
+  })
+
   useCloseModal(()=>handlerPopup(), refPopup);
 
+  const TIME_TASK_DEFAULT = 25;
+  let counterTotal = 0;
+  let timeTotal;
+
+  function calculateTasks() {
+    tasksStore.list.forEach((element) => {
+      counterTotal += element.count;
+    });
+
+    timeTotal = counterTotal * TIME_TASK_DEFAULT;
+
+    return timeTotal;
+  }
 
   return (
     <div className="taskManager">
       <form action="#" onSubmit={handleSubmit}>
-        <input name="title" type="text" placeholder="Название задачи" required maxLength={30} ref={refInput}/>
+        <input name="title" type="text" placeholder="Название задачи" required maxLength={26} ref={refInput}/>
         <button className="taskManager__btn-add" type="submit">Добавить</button>
       </form>
       <ul className="taskManager__task-list" ref={refPopup}>      
           {tasksStore.list.map((l) => (
             <li className="taskManager__task" key={l.id}>
               <span className="taskManager__count">{l.count}</span>   
-              <span className="taskManager__title">{l.title}</span>
+              <span className="taskManager__title">{l.title}
+                {l.rename && (
+                  <input type="text" placeholder={l.title} maxLength={26} ref={refRename} autoFocus onBlur={() => {handlerRename(l.id)}}></input>
+                )}
+              </span>
               <div className="taskManager__menu" >
                 <button className="taskManager__btn" onClick={()=>handlerPopup(l.id)}>
                   <img src={threeDots} alt="Three dots" />
@@ -84,7 +109,7 @@ export const TaskManager = observer(() => {
                       {l.count === 1 && (<img src={minusGray} alt="Minus no active" />)} 
                       Уменьшить
                     </button>                      
-                    <button>
+                    <button onClick={() => {handlerRename(l.id)}}>
                       <img src={pen} alt="Change" />
                       Редактировать
                     </button>
@@ -97,7 +122,7 @@ export const TaskManager = observer(() => {
             </li>
           ))}
       </ul>
+      {tasksStore.list.length > 0 && (<span className="taskManager__totalTime">{calculateTasks()} мин</span>)}      
     </div>
   );
 })
-
