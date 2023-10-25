@@ -59,6 +59,7 @@ export const TaskManager = observer(() => {
   const handlerModal = action((id:number) => {
     modalStore.modal = true;
     modalStore.id = id;
+    tasksStore.list = tasksStore.list.map(n => n = { ...n, popup: false});
   })
 
   const handlerRename = action((id:number) => {

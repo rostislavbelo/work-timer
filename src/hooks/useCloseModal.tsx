@@ -16,12 +16,12 @@ export function useCloseModal(cb:()=>void, ref:React.RefObject<HTMLElement>) {
         }
     }
     
-    document.addEventListener('click', handleClick)
+    document.addEventListener('mousedown', handleClick)
 
     document.addEventListener('keydown', handleKeydownEsc)
 
     return () => {
-        document.removeEventListener('click', handleClick);
+        document.removeEventListener('mousedown', handleClick);
         document.addEventListener('keydown', handleKeydownEsc);
     }
 
