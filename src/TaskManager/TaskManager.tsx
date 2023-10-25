@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState} from "react";
+import React, { FormEvent, useEffect, useRef} from "react";
 import "./taskManager.css";
 import { useStore } from "../store";
 import { action } from "mobx";
@@ -10,6 +10,7 @@ import minus from "../icons/minus.svg";
 import pen from "../icons/pen.svg";
 import del from "../icons/delete.svg";
 import { useCloseModal } from "../hooks/useCloseModal";
+import { ModalDelete } from "../ModalDelete";
 
 export const TaskManager = observer(() => {
 
@@ -23,6 +24,7 @@ export const TaskManager = observer(() => {
   }, [refInput]);
 
   const { tasksStore } = useStore();
+  const { modalStore } = useStore();
 
   const handleSubmit = action((e: FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,8 @@ export const TaskManager = observer(() => {
       id: Date.now(),
       count: 1,
       popup: false,
-      rename: false
+      rename: false,
+      delete: false,
     }];
     if (refInput.current !== null) {
       refInput.current.value = '';
@@ -53,8 +56,9 @@ export const TaskManager = observer(() => {
     tasksStore.list = tasksStore.list.map(n => n.id === id && n.count > 1 ? { ...n, count: n.count-1} : n)
   })
 
-  const handlerDelete = action((id:number) => {
-    tasksStore.list.map((n, index) => n.id === id ? {...tasksStore.list.splice(index, 1)} : n);
+  const handlerModal = action((id:number) => {
+    modalStore.modal = true;
+    modalStore.id = id;
   })
 
   const handlerRename = action((id:number) => {
@@ -113,7 +117,7 @@ export const TaskManager = observer(() => {
                       <img src={pen} alt="Change" />
                       Редактировать
                     </button>
-                    <button onClick={()=>handlerDelete(l.id)}>
+                    <button onClick={()=>handlerModal(l.id)}>
                       <img src={del} alt="Delete" />
                       Удалить
                     </button>
@@ -123,6 +127,7 @@ export const TaskManager = observer(() => {
           ))}
       </ul>
       {tasksStore.list.length > 0 && (<span className="taskManager__totalTime">{calculateTasks()} мин</span>)}      
+      {modalStore.modal && (<ModalDelete />)}
     </div>
   );
 })
