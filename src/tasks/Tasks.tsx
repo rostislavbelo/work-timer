@@ -1,9 +1,15 @@
 import React from 'react';
 import  './tasks.css';
 import { TaskManager } from '../TaskManager';
+import { Timer } from '../Timer';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../store';
 
 
-export function Tasks() {
+export const Tasks= observer(() => {
+
+  const { tasksStore } = useStore();
+
   return (
     <section className="tasks">
         <div className="tasks__task-block">
@@ -18,9 +24,10 @@ export function Tasks() {
             <TaskManager />
         </div>
         <div className="tasks__timer-block">
+          {tasksStore.list.length > 0 && (<Timer />)}
         </div>
 
     </section>
 
   );
-}
+})

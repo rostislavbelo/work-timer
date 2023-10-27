@@ -11,7 +11,7 @@ export const ModalDelete = observer(() => {
     const { modalStore } = useStore();
     const { tasksStore } = useStore();
 
-    const handlerDelete = action((id: number) => {
+    const handlerDeleteTask = action((id: number) => {
         tasksStore.list.map((n, index) => n.id === id ? { ...tasksStore.list.splice(index, 1) } : n );
         modalStore.id = 0;
       });
@@ -28,30 +28,25 @@ export const ModalDelete = observer(() => {
   return (
     <div className="modalDelete" id={String(modalStore.modal)}>
       <div className="modalDelete__block" ref={refBlock}>
-        <h1>Удалить задачу?</h1>
+        <h2>Удалить задачу?</h2>
         <button
           className="modalDelete__close-top-btn"
           onClick={() => {
             modalStore.modal = false;
-          }}
-        >
+          }}>
           <img src={iconX} alt="Plus" />
         </button>
         <button
           className="modalDelete__main-btn"
           onClick={() => {
-            handlerDelete(modalStore.id);
+            handlerDeleteTask(modalStore.id);
             modalStore.modal = false;
-          }}
-        >
+          }}>
           Удалить
         </button>
         <button
           className="modalDelete__close-text-btn"
-          onClick={() => {
-            modalStore.modal = false;
-          }}
-        >
+          onClick={() => {modalStore.modal = false;}}>
           Отмена
         </button>
       </div>

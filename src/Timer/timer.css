@@ -1,0 +1,92 @@
+.timer {
+    width : 100%;
+    height: 100%;
+}
+
+.timer__top {
+    width           : 100%;
+    min-height      : 55px;
+    background-color: #C4C4C4;
+    display         : flex;
+    justify-content : space-between;
+    align-items     : center;
+    padding         : 10px 40px;
+    margin-bottom   : 80px;
+}
+
+.timer__top span {
+    font-size  : 16px;
+    font-weight: 400;
+    line-height: 17px;
+    color      : white;
+}
+
+.timer__clock {
+    width     : 390px;
+    min-height: 180px;
+    margin    : 0 auto 41px auto;
+    position  : relative;
+}
+
+.timer__display {
+    font-size  : 150px;
+    font-weight: 200;
+    line-height: unset;
+    text-align : center;
+}
+
+.timer__display-separator {
+    display  : inline-block;
+    transform: translateY(-12px);
+}
+
+.timer__btn-plus {
+    position        : absolute;
+    right           : -55px;
+    top             : 50%;
+    transform       : translateY(-50%);
+    width           : 50px;
+    height          : 50px;
+    border-radius   : 50%;
+    background-color: #C4C4C4;
+    padding         : 0;
+    display         : flex;
+    justify-content : center;
+    align-items     : center;
+    transition: background-color linear 0.2s;
+}
+
+.timer__btn-plus img {
+    width  : 16px;
+    height : 16px;
+    display: block;
+}
+
+.timer__btn-plus:hover {
+    background-color: #a8b64f;
+}
+
+.timer__controls {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.timer__controls [class ^="timer__controls-"] {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+[class ^="timer__controls-"] button:first-child {
+    margin-right: 25px;
+}
+
+.timer__controls-waiting .timer__btn-stop {
+    pointer-events: none;
+    background-color: transparent;
+    border: 2px solid #c4c4c4;
+    color: #c4c4c4;
+}
