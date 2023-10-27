@@ -20,5 +20,6 @@ button {
   color: #ffffff;
   border: none;
   cursor: pointer;
+  transition: background-color linear 0.2s;
 }
 

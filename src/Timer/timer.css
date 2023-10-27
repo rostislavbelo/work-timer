@@ -14,6 +14,16 @@
     margin-bottom   : 80px;
 }
 
+#working-pause .timer__top, 
+#working .timer__top {
+    background-color: #DC3E22;
+}
+
+#break-pause .timer__top,
+#break-active .timer__top {
+    background-color: #A8B64F;
+}
+
 .timer__top span {
     font-size  : 16px;
     font-weight: 400;
@@ -33,6 +43,14 @@
     font-weight: 200;
     line-height: unset;
     text-align : center;
+}
+
+#working .timer__display {
+    color: #DC3E22;
+}
+
+#break-active .timer__display {
+    color: #A8B64F;
 }
 
 .timer__display-separator {
@@ -84,9 +102,40 @@
     margin-right: 25px;
 }
 
+.timer__controls-waiting .timer__btn-start:hover {
+    background-color: #899441;
+}
+
 .timer__controls-waiting .timer__btn-stop {
     pointer-events: none;
     background-color: transparent;
     border: 2px solid #c4c4c4;
     color: #c4c4c4;
 }
+
+
+.timer__controls-break-pause .timer__btn-skip,
+.timer__controls-break .timer__btn-skip,
+.timer__controls-working-pause .timer__btn-ready,
+.timer__controls-working-work .timer__btn-stop {
+    pointer-events: all;
+    background-color: transparent;
+    border: 2px solid #DC3E22;
+    color: #DC3E22;
+}
+
+
+.timer__controls-break-pause .timer__btn-skip:hover,
+.timer__controls-break .timer__btn-skip:hover,
+.timer__controls-working-pause .timer__btn-ready:hover,
+.timer__controls-working-work .timer__btn-stop:hover {
+    background-color: #DC3E22;
+    color: #FFFFFF;
+}
+
+.timer__controls-break-pause .timer__btn-continue:hover,
+.timer__controls-break .timer__btn-pause:hover,
+.timer__controls-working-work .timer__btn-pause:hover {
+    background-color: #899441;
+}
+

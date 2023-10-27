@@ -12,13 +12,17 @@ export const ModalDelete = observer(() => {
     const { tasksStore } = useStore();
 
     const handlerDeleteTask = action((id: number) => {
-        tasksStore.list.map((n, index) => n.id === id ? { ...tasksStore.list.splice(index, 1) } : n );
+        tasksStore.list =  tasksStore.list.slice().filter((number) => id !== number.id);
         modalStore.id = 0;
-      });
+    });
+
+    const handlerCloseModal = action(() => {
+        modalStore.modal = false;
+    });
 
     function closeModal() {
         if (modalStore.modal) {
-            modalStore.modal = false;
+            handlerCloseModal();
         }        
     }
 
@@ -32,7 +36,7 @@ export const ModalDelete = observer(() => {
         <button
           className="modalDelete__close-top-btn"
           onClick={() => {
-            modalStore.modal = false;
+            handlerCloseModal()
           }}>
           <img src={iconX} alt="Plus" />
         </button>
@@ -40,13 +44,13 @@ export const ModalDelete = observer(() => {
           className="modalDelete__main-btn"
           onClick={() => {
             handlerDeleteTask(modalStore.id);
-            modalStore.modal = false;
+            handlerCloseModal()
           }}>
           Удалить
         </button>
         <button
           className="modalDelete__close-text-btn"
-          onClick={() => {modalStore.modal = false;}}>
+          onClick={() => {handlerCloseModal()}}>
           Отмена
         </button>
       </div>

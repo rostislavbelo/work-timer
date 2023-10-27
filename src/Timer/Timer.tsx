@@ -5,15 +5,22 @@ import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
 
 export const Timer = observer(() => {
-  const DEFAULT_TIME_WORK = 0.18;
-  //const DEFAULT_TIME_BREAK = 0.09;
+  //доступ к стору задач  
+  const { tasksStore } = useStore(); 
 
+  const DEFAULT_TIME_WORK = 0.18;
+  const DEFAULT_TIME_BREAK = 0.09;
+
+  //Значение типового времени задачи в секундах
   let timeWork = DEFAULT_TIME_WORK * 60;
+
+  //Значение типового времени перерыва в секундах
+  let timeBreak = DEFAULT_TIME_BREAK * 60;
 
   let [timerPause, setTimerPause] = useState(false);
   const [timerStart, setTimerStart] = useState(false);
   const [time, setTime] = useState(timeWork);
-  const [currentState, setCurrentState] = useState('waiting');
+  const [currentState, setCurrentState] = useState('working-waiting');
 
   let secCurrent = Math.floor(time % 60);
   let minCurrent = Math.floor((time / 60) % 60);
@@ -39,13 +46,44 @@ export const Timer = observer(() => {
     setTime(time + 60);
   }
 
-  const { tasksStore } = useStore();
-  
+  //Счетчик помидоров
+  const [numberPomodor, setNumberPomodor] = useState(1);
+
+  //Счетчик перерывов
+  const [numberBreak, setNumberBreak] = useState(1);
+
+  //Автопереключение помидор/пауза
+  useEffect(() => {
+    if (minCurrent === 0 && secCurrent === 0 && currentState === "working") {
+        setCurrentState("break-active");
+        setTime(timeBreak);
+        setNumberPomodor(numberPomodor + 1);
+    }
+    if (minCurrent === 0 && secCurrent === 0 && currentState === "break-active") {
+        setCurrentState("working");
+        setTime(timeWork);
+        setNumberBreak(numberBreak + 1);
+    }
+  },[currentState, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork]);
+
+  //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при удалении. 
+  let taskActive = tasksStore.list.slice()[0].id;
+  useEffect(() => {
+    setTimerPause(false);
+    setTimerStart(false);
+    setCurrentState("working-waiting");
+    setTime(timeWork);
+    setNumberPomodor(1);
+    setNumberBreak(1)
+  },[taskActive, timeWork]);
+
+
   return (
     <div className="timer" id={currentState}>
       <div className="timer__top">
         <span className="timer__title">{tasksStore.list[0].title}</span>
-        <span className="timer__number">Текст2</span>
+        {currentState.includes('working') && (<span className="timer__number">{`Помидор ${numberPomodor}`}</span>)}
+        {currentState.includes("break") && (<span className="timer__number">{`Перерыв ${numberBreak}`}</span>)}
       </div>
       <div className="timer__clock">
         <div className="timer__display">
@@ -66,7 +104,7 @@ export const Timer = observer(() => {
         </button>
       </div>
       <div className="timer__controls">
-        { currentState === "waiting" && <div className="timer__controls-waiting">
+        { currentState === "working-waiting" && <div className="timer__controls-waiting">
           <button
             className="timer__btn-start"
             onClick={() => {
@@ -84,7 +122,13 @@ export const Timer = observer(() => {
                     setTimerPause(true);
                     setCurrentState("working-pause");
                 }}>Пауза</button>
-              <button className="timer__btn-stop">Стоп</button>
+              <button className="timer__btn-stop"
+                    onClick={() => {
+                    setTimerPause(false);
+                    setTimerStart(false);
+                    setCurrentState("working-waiting");
+                    setTime(timeWork);
+                }}>Стоп</button>
             </div>
         )}
         {currentState === "working-pause" && (   
@@ -95,19 +139,47 @@ export const Timer = observer(() => {
                     setTimerStart(true);
                     setCurrentState("working");
                 }}>Продолжить</button>
-                <button className="timer__btn-ready">Сделано</button>
+                <button className="timer__btn-ready"
+                onClick={() => {
+                    setNumberPomodor(numberPomodor + 1);
+                    setTimerPause(false);
+                    setTimerStart(false);
+                    setCurrentState("working-waiting");
+                    setTime(timeWork);
+                }}>Сделано</button>
             </div>
         )}
-        {currentState === "XXXXXX" && ( 
+        {currentState === "break-active" && ( 
             <div className="timer__controls-break">
-                <button className="timer__btn-pause">Пауза</button>
-                <button className="timer__btn-skip">Пропустить</button>
+                <button className="timer__btn-pause"
+                    onClick={() => {
+                        setTimerStart(false);
+                        setTimerPause(true);
+                        setCurrentState("break-pause");
+                    }}>Пауза</button>
+                <button className="timer__btn-skip"
+                   onClick={() => {
+                    setTimerStart(false);
+                    setCurrentState("working-waiting");
+                    setTime(timeWork);
+                }}>Пропустить</button>
             </div>
         )}
-        {currentState === "XXXXXX" && (    
+        {currentState === "break-pause" && (    
             <div className="timer__controls-break-pause">
-                <button className="timer__btn-continue">Продолжить</button>
-                <button className="timer__btn-skip">Пропустить</button>
+                <button className="timer__btn-continue"
+                    onClick={() => {
+                    setTimerStart(true);
+                    setTimerPause(false);
+                    setCurrentState("break-active");
+                }}>Продолжить</button>
+                <button className="timer__btn-skip"
+                   onClick={() => {
+                    setTimerPause(false);
+                    setTimerStart(false);
+                    setCurrentState("working-waiting");
+                    setTime(timeWork);
+                }}>Пропустить</button>
             </div>
         )}
       </div>
