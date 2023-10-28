@@ -11,6 +11,7 @@ import pen from "../icons/pen.svg";
 import del from "../icons/delete.svg";
 import { useCloseModal } from "../hooks/useCloseModal";
 import { ModalDelete } from "../ModalDelete";
+import { storeTasks } from "../serviceFunctions/keepLocalStorage";
 
 export const TaskManager = observer(() => {
 
@@ -42,24 +43,29 @@ export const TaskManager = observer(() => {
       refInput.current.value = '';
     };
     tasksStore.list = tasksStore.list.map(n => n = { ...n, popup: false});
+    storeTasks('tasksStoreList', tasksStore.list);
   });
 
   const handlerPopup = action((id?:number) => {
     tasksStore.list = tasksStore.list.map(n => n.id === id ? { ...n, popup: !n.popup} : { ...n, popup: false});
+    storeTasks('tasksStoreList', tasksStore.list);
   })
 
   const handlerPlus = action((id:number) => {
-    tasksStore.list = tasksStore.list.map(n => n.id === id && n.count < 100 ? { ...n, count: n.count+1} : n)
+    tasksStore.list = tasksStore.list.map(n => n.id === id && n.count < 100 ? { ...n, count: n.count+1} : n);
+    storeTasks('tasksStoreList', tasksStore.list);
   })
 
   const handlerMinus = action((id:number) => {
-    tasksStore.list = tasksStore.list.map(n => n.id === id && n.count > 1 ? { ...n, count: n.count-1} : n)
+    tasksStore.list = tasksStore.list.map(n => n.id === id && n.count > 1 ? { ...n, count: n.count-1} : n);
+    storeTasks('tasksStoreList', tasksStore.list);
   })
 
   const handlerModal = action((id:number) => {
     modalStore.modal = true;
     modalStore.id = id;
     tasksStore.list = tasksStore.list.map(n => n = { ...n, popup: false});
+    storeTasks('tasksStoreList', tasksStore.list);
   })
 
   const handlerRename = action((id:number) => {
@@ -67,11 +73,12 @@ export const TaskManager = observer(() => {
     tasksStore.list = tasksStore.list.map(n => n = { ...n, popup: false});
     if (refRename.current?.value === undefined) return;
     tasksStore.list = tasksStore.list.map(n => n.id === id && refRename.current?.value !== "" ? { ...n, title: String(refRename.current?.value)} : n);
+    storeTasks('tasksStoreList', tasksStore.list);
   })
 
   useCloseModal(()=>handlerPopup(), refPopup);
 
-  const TIME_TASK_DEFAULT = 25;
+  //const TIME_TASK_DEFAULT = 25;
   let counterTotal = 0;
   let timeTotal;
 
@@ -80,10 +87,19 @@ export const TaskManager = observer(() => {
       counterTotal += element.count;
     });
 
-    timeTotal = counterTotal * TIME_TASK_DEFAULT;
+    timeTotal = counterTotal * tasksStore.timeWork;
 
     return timeTotal;
   }
+
+  useEffect(() => {
+    if (localStorage) {
+      const storageTaskList = localStorage.getItem('tasksStoreList');
+      if (storageTaskList) {
+        tasksStore.list = [...JSON.parse(storageTaskList)];
+      }
+    }
+  },[tasksStore]);
 
   return (
     <div className="taskManager">

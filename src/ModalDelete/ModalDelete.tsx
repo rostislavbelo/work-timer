@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../store";
 import { action } from "mobx";
 import { useCloseModal } from "../hooks/useCloseModal";
+import { storeTasks } from "../serviceFunctions/keepLocalStorage";
 
 export const ModalDelete = observer(() => {
 
@@ -14,6 +15,7 @@ export const ModalDelete = observer(() => {
     const handlerDeleteTask = action((id: number) => {
         tasksStore.list =  tasksStore.list.slice().filter((number) => id !== number.id);
         modalStore.id = 0;
+        storeTasks('tasksStoreList', tasksStore.list);
     });
 
     const handlerCloseModal = action(() => {

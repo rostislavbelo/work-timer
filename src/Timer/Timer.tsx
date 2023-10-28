@@ -8,14 +8,14 @@ export const Timer = observer(() => {
   //доступ к стору задач  
   const { tasksStore } = useStore(); 
 
-  const DEFAULT_TIME_WORK = 0.18;
-  const DEFAULT_TIME_BREAK = 0.09;
+//   const DEFAULT_TIME_WORK = 0.18;
+//   const DEFAULT_TIME_BREAK = 0.09;
 
   //Значение типового времени задачи в секундах
-  let timeWork = DEFAULT_TIME_WORK * 60;
+  let timeWork = tasksStore.timeWork * 60;
 
   //Значение типового времени перерыва в секундах
-  let timeBreak = DEFAULT_TIME_BREAK * 60;
+  let timeBreak = tasksStore.timeBreak * 60;
 
   let [timerPause, setTimerPause] = useState(false);
   const [timerStart, setTimerStart] = useState(false);
@@ -42,7 +42,7 @@ export const Timer = observer(() => {
 
   // Прибавление по 1 минуте к текущему времени. 
   function plusTime() {
-    if (time >= 59*60) return;
+    if (time >= 59 * 60) return;
     setTime(time + 60);
   }
 
@@ -66,7 +66,7 @@ export const Timer = observer(() => {
     }
   },[currentState, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork]);
 
-  //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при удалении. 
+  //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при его удалении. 
   let taskActive = tasksStore.list.slice()[0].id;
   useEffect(() => {
     setTimerPause(false);
