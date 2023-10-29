@@ -7,7 +7,7 @@
 .statistics__top {
     display        : flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom  : 30px;
 }
 
 .statistics__top h1 {
@@ -30,6 +30,83 @@
     width           : 78%;
     min-height      : 471px;
     background-color: #ECECEC;
+    display         : flex;
+    flex-direction  : column;
+}
+
+.statistics__graph-line {
+    margin-top   : 54px;
+    width        : 100%;
+    padding-right: 20px;
+    display      : flex;
+    position     : relative;
+}
+
+.statistics__graph-line span {
+    display    : block;
+    font-size  : 12px;
+    font-weight: 400;
+    line-height: 33px;
+    color      : #333333;
+    margin-left: auto;
+}
+
+.statistics__graph-line::before {
+    position        : absolute;
+    display         : block;
+    content         : "";
+    width           : 86%;
+    height          : 1px;
+    background-color: #333333;
+    left            : 0;
+    top             : 50%;
+    opacity         : 0.2;
+}
+
+.statistics__line-days {
+    width           : 100%;
+    background-color: #e0dede;
+    margin-top      : auto;
+    min-height      : 51px;
+    display         : flex;
+    align-items     : center;
+    padding-left    : 6%;
+}
+
+.statistics__line-days span {
+    display   : block;
+    width     : 12%;
+    text-align: center;
+    position  : relative;
+}
+
+.statistics__line-days div {
+    width       : 9%;
+    text-align  : center;
+    margin-right: 3%;
+    font-size   : 24px;
+    font-weight : 400;
+    line-height : 29px;
+    color       : #999999;
+    position    : relative;
+}
+
+.statistics__line-days div::before {
+    position        : absolute;
+    display         : block;
+    content         : "";
+    width           : 100%;
+    height          : 5px;
+    background-color: #C4C4C4;
+    top             : -16px;
+}
+
+.statistics__line-days div span {
+    position        : absolute;
+    bottom          : 40px;
+    background-color: #EA8A79;
+    /* height       : 115px; */
+    width           : 100%;
 }
 
 .statistics__day-stat {
@@ -163,20 +240,20 @@
     font-weight     : 400;
     line-height     : 17px;
     text-align      : left;
-    padding: 19px 50px 19px 15px;
-    width: 100%;
-    min-height: 55px;
-    border-bottom: 1px solid #DEDEDE;
-    color: #333333;
-    transition: opacity linear 0.2s;
-    display: block;
+    padding         : 19px 50px 19px 15px;
+    width           : 100%;
+    min-height      : 55px;
+    border-bottom   : 1px solid #DEDEDE;
+    color           : #333333;
+    transition      : opacity linear 0.2s;
+    display         : block;
 }
 
 .statistics__filter {
-    width: 370px;
-    position: relative;
+    width     : 370px;
+    position  : relative;
     min-height: 55px;
-    cursor: pointer;
+    cursor    : pointer;
 }
 
 .statistics__filter-current-value,
@@ -204,23 +281,25 @@
 } */
 
 .statistics__filter svg {
-    width: 14px;
-    height: 7px;
-    display: block;
-    position: absolute;
-    right: 19px;
-    top: 19px;
-    z-index: 10;
+    width     : 14px;
+    height    : 7px;
+    display   : block;
+    position  : absolute;
+    right     : 16px;
+    top       : 25px;
+    z-index   : 10;
     transition: transform linear 0.2s;
 }
 
 #true.statistics__filter svg {
-    transform: rotate(180deg);
+    transform: scale(1, -1);
+    z-index: 11;
 }
 
 .statistics__filter-list {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+    left    : 0;
+    top     : 0;
+    width   : 100%;
+    z-index: 10;
 }

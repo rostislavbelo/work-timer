@@ -5,6 +5,12 @@ import tomatoSmall from "../icons/tomatoSmall.svg";
 
 export function Statistics() {
 
+  const FILTER_ITEM_TITLES = [
+    "Эта неделя",
+    "Прошедшая неделя",
+    "2 недели назад"
+  ]
+
   const [filtrCurrentValue, setFilterCurrentValue] = useState('Эта неделя');
   const [filtrActive, setFilterActive] = useState(false);
 
@@ -19,9 +25,9 @@ export function Statistics() {
           </svg>
           <span className="statistics__filter-current-value">{filtrCurrentValue}</span>
           {filtrActive && (<div className="statistics__filter-list">
-            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue("Эта неделя")}}>Эта неделя</button>
-            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue("Прошедшая неделя")}}>Прошедшая неделя</button>
-            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue("2 недели назад")}}>2 недели назад</button>
+            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[0])}}>{FILTER_ITEM_TITLES[0]}</button>
+            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[1])}}>{FILTER_ITEM_TITLES[1]}</button>
+            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[2])}}>{FILTER_ITEM_TITLES[2]}</button>
           </div>)}
         </div>
       </div>
@@ -42,7 +48,21 @@ export function Statistics() {
             </div>
           </div>
         </div>
-        <div className="statistics__graph"></div>
+        <div className="statistics__graph">
+          <div className="statistics__graph-line"><span>1</span></div>
+          <div className="statistics__graph-line"><span>1</span></div>
+          <div className="statistics__graph-line"><span>1</span></div>
+          <div className="statistics__graph-line"><span>1</span></div>
+          <div className="statistics__line-days">
+            <div>Пн<span></span></div>
+            <div>Вт<span></span></div>
+            <div>Ср<span></span></div>
+            <div>Чт<span></span></div>
+            <div>Пт<span></span></div>
+            <div>Сб<span></span></div>
+            <div>Вс<span></span></div>            
+          </div>
+        </div>
       </div>
       <div className="statistics__bottom-list">
         <div className="statistics__bottom-item">
