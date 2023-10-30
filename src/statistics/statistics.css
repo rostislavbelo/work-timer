@@ -246,7 +246,7 @@
     min-height      : 55px;
     border-bottom   : 1px solid #DEDEDE;
     color           : #333333;
-    transition      : opacity linear 0.2s;
+    transition      : background-color linear 0.2s;
     display         : block;
 }
 
@@ -263,7 +263,7 @@
 }
 
 .statistics__filter button:hover {
-    opacity: 0.85;
+    background-color: #dad2d2;
 }
 
 /* .statistics__filter::before {

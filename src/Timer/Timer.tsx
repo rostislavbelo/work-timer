@@ -10,6 +10,7 @@ export const Timer = observer(() => {
   //доступ к стору задач  
   const { tasksStore } = useStore(); 
 
+  //доступ к стору статистики
   const { statsStore } = useStore();
 
   //Значение типового времени задачи в секундах
@@ -81,11 +82,10 @@ export const Timer = observer(() => {
 
     //Фиксация остановок
    const updatStopList = action(() => {
-    statsStore.stopList.push(Date.now());
-    storeTasks('pauseStopList', statsStore.stopList);
+    statsStore.stopList.push([Date.now()]);
+    storeTasks('stopStoreList', statsStore.stopList);
     setStartPause(0); 
-  }); 
-  
+  });   
 
   //Автопереключение помидор/перерыв
   useEffect(() => {

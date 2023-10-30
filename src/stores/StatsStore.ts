@@ -19,9 +19,9 @@ export const statsStore = () => {
     }
 
     return makeAutoObservable({
-      pomodoroList: pomodoroListSave || [] as [number, number] [],
-      pauseList: pauseListSave || [] as [number, number] [],
-      stopList: stopListSave || [] as number[],
+      pomodoroList: pomodoroListSave || [] as number[] [],
+      pauseList: pauseListSave || [] as number[] [],
+      stopList: stopListSave || [] as number[] [],
     });
   };
   

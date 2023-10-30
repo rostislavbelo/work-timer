@@ -1,18 +1,122 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./statistics.css";
 import tomato from "../icons/tomato.svg";
 import tomatoSmall from "../icons/tomatoSmall.svg";
+import { useStore } from "../store";
+import { observer } from "mobx-react-lite";
 
-export function Statistics() {
+export const Statistics = observer(() => {
 
   const FILTER_ITEM_TITLES = [
     "Эта неделя",
     "Прошедшая неделя",
-    "2 недели назад"
+    "2 недели назад",
   ]
 
+  //Состояния дропдауна фильтра
   const [filtrCurrentValue, setFilterCurrentValue] = useState('Эта неделя');
   const [filtrActive, setFilterActive] = useState(false);
+
+  const [day, setDay] = useState('Понедельник');
+  
+  const [timeWork, setTimeWork] = useState('Нет данных');
+
+
+  //Калькуляция статистики
+  const { statsStore } = useStore();
+
+  useEffect(() => {
+    let today = new Date();
+    let yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate()-1, 23, 59, 59, 999);
+    let dayWeekToday =  today.getDay();
+
+    const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Cуббота'];
+
+    //Сутки в миллисекундах 
+    const MS_DAY = 8640000000;
+
+    //Получение обекта с недельными массивами: эта неделя, прошлая, позапрошлая
+    function getWeeksGroops(list: [number, number][]) {
+      let data:number[];
+
+      function filterWeeks() {
+        return {thisWeek: list.filter((element) => {return element[0] > data[0]}), 
+        lastWeek: list.filter((element) => {return element[0] < data[0] && element[0] > data[0] - MS_DAY * 7}),
+        beforeLastWeek: list.filter((element) => {return element[0] < data[0] - MS_DAY * 7 && element[0] > data[0] - MS_DAY * 14})};
+      }
+
+      switch (dayWeekToday) {
+        case 1:
+          data = [yesterday.getTime(), today.getTime()];
+          return filterWeeks()
+        case 2:
+          data = [yesterday.getTime() - MS_DAY, today.getTime()];
+          return filterWeeks()
+        case 3:
+          data = [yesterday.getTime() - MS_DAY * 2, today.getTime()];
+          return filterWeeks()
+        case 4:
+          data = [yesterday.getTime() - MS_DAY * 3, today.getTime()];  
+          return filterWeeks()
+        case 5:
+          data = [yesterday.getTime() - MS_DAY * 4, today.getTime()]; 
+          return filterWeeks()
+        case 6:
+          data = [yesterday.getTime() - MS_DAY * 5, today.getTime()]; 
+          return filterWeeks()
+        case 0:
+          data = [yesterday.getTime() - MS_DAY * 6, today.getTime()]; 
+          return filterWeeks()                                      
+      }
+    }
+
+    setDay(days[today.getDay()])
+
+    let listPomodors = getWeeksGroops(statsStore.pomodoroList);
+  
+    function getWorkTimeDay() {
+      if (!listPomodors) return;
+      let result = 0;
+      let workToday = listPomodors.thisWeek.filter((element) => {
+        return new Date(element[0]).getDay() === new Date().getDay();
+      });
+      workToday.forEach((element) => {
+        result = result + (element[1] - element[0]);
+      })
+
+      return String(result/1000/60);      
+    }
+
+    setTimeWork('Вы работали ' + getWorkTimeDay() + ' минут');
+  
+
+
+    // localStorage.setItem('pomodoroStoreList', JSON.stringify(
+    // ));
+
+    // function eee(ar:number[][]) {
+    //   let data = ar.slice();
+    //   let result:number[][] = []
+    //   data.forEach((element:number[]) => { 
+    //   result.push([element[0], element[1]]);//1
+    //   result.push([element[0]-MS_DAY, element[1]-MS_DAY]);//2
+    //    result.push([element[0]-MS_DAY*2, element[1]-MS_DAY*2]);//3
+    //    result.push([element[0]-MS_DAY*3, element[1]-MS_DAY*3]);//4
+    //    result.push([element[0]-MS_DAY*6, element[1]-MS_DAY*6]);//5
+    //      result.push([element[0]-MS_DAY*7, element[1]-MS_DAY*7]);//6
+    //      result.push([element[0]-MS_DAY*8, element[1]-MS_DAY*8]);//7
+    //      result.push([element[0]-MS_DAY*10, element[1]-MS_DAY*10]);//8
+
+    //   });
+      
+    //   return result;
+    // }
+
+  //   console.log(eee());
+
+
+    console.log(statsStore.pomodoroList, today, yesterday, dayWeekToday, getWeeksGroops(statsStore.pomodoroList), getWeeksGroops(statsStore.pauseList), getWeeksGroops(statsStore.stopList));
+  },[statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList]);
 
 
   return (
@@ -34,8 +138,8 @@ export function Statistics() {
       <div className="statistics__center">
         <div className="statistics__day-stat">
           <div className="statistics__day-time">
-            <p>Воскресенье</p>
-            <span>Нет данных</span>
+            <p>{day}</p>
+            <span>{timeWork}</span>
           </div>
           <div className="statistics__day-tasks">
             {/* <img src={tomato} alt="Tomato" /> */}
@@ -101,4 +205,4 @@ export function Statistics() {
       </div>
     </section>
   );
-}
+});
