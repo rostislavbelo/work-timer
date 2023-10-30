@@ -92,14 +92,15 @@ export const TaskManager = observer(() => {
     return timeTotal;
   }
 
-  useEffect(() => {
-    if (localStorage) {
-      const storageTaskList = localStorage.getItem('tasksStoreList');
-      if (storageTaskList) {
-        tasksStore.list = [...JSON.parse(storageTaskList)];
-      }
-    }
-  },[tasksStore]);
+
+  // useEffect(() => {
+  //   if (localStorage) {
+  //     const storageTaskList = localStorage.getItem('tasksStoreList');
+  //     if (storageTaskList) {
+  //       modTasksStore([...JSON.parse(storageTaskList)]);
+  //     }
+  //   }
+  // },[]);
 
   return (
     <div className="taskManager">

@@ -3,13 +3,14 @@ import "./timer.css";
 import iconPlus from "../icons/iconPlus.svg";
 import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
+import { action } from "mobx";
+import { storeTasks } from "../serviceFunctions/keepLocalStorage";
 
 export const Timer = observer(() => {
   //доступ к стору задач  
   const { tasksStore } = useStore(); 
 
-//   const DEFAULT_TIME_WORK = 0.18;
-//   const DEFAULT_TIME_BREAK = 0.09;
+  const { statsStore } = useStore();
 
   //Значение типового времени задачи в секундах
   let timeWork = tasksStore.timeWork * 60;
@@ -46,25 +47,61 @@ export const Timer = observer(() => {
     setTime(time + 60);
   }
 
-  //Счетчик помидоров
+  //Счетчик помидоров в таймере
   const [numberPomodor, setNumberPomodor] = useState(1);
 
-  //Счетчик перерывов
+  //Счетчик перерывов в таймере
   const [numberBreak, setNumberBreak] = useState(1);
 
-  //Автопереключение помидор/пауза
+  //Фиксация времени начала/окончания помидоров
+    const [startPomodor, setStartPomodor] = useState(0);
+
+    function recordStartPomodor() {
+        setStartPomodor(Date.now());        
+    }
+
+   const updatePomodoroList = action(() => {
+    statsStore.pomodoroList.push([startPomodor, Date.now()]);
+    storeTasks('pomodoroStoreList', statsStore.pomodoroList);
+    setStartPomodor(0); 
+  });
+
+    //Фиксация времени начала/окончания пауз
+    const [startPause, setStartPause] = useState(0);
+
+    function recordStartPause() {
+        setStartPause(Date.now());        
+    }
+
+   const updatePauseList = action(() => {
+    statsStore.pauseList.push([startPause, Date.now()]);
+    storeTasks('pauseStoreList', statsStore.pauseList);
+    setStartPause(0); 
+  })
+
+    //Фиксация остановок
+   const updatStopList = action(() => {
+    statsStore.stopList.push(Date.now());
+    storeTasks('pauseStopList', statsStore.stopList);
+    setStartPause(0); 
+  }); 
+  
+
+  //Автопереключение помидор/перерыв
   useEffect(() => {
     if (minCurrent === 0 && secCurrent === 0 && currentState === "working") {
         setCurrentState("break-active");
         setTime(timeBreak);
-        setNumberPomodor(numberPomodor + 1);
+        setNumberPomodor(numberPomodor + 1); 
+        updatePomodoroList();             
     }
     if (minCurrent === 0 && secCurrent === 0 && currentState === "break-active") {
         setCurrentState("working");
         setTime(timeWork);
         setNumberBreak(numberBreak + 1);
+        recordStartPomodor();
     }
-  },[currentState, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork]);
+  },[currentState, updatePomodoroList, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork, statsStore.pomodoroList]);
 
   //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при его удалении. 
   let taskActive = tasksStore.list.slice()[0].id;
@@ -98,7 +135,7 @@ export const Timer = observer(() => {
         <button
           className="timer__btn-plus"
           onClick={() => {
-            plusTime()
+            plusTime();
           }}>
           <img src={iconPlus} alt="Plus" />
         </button>
@@ -111,6 +148,7 @@ export const Timer = observer(() => {
               setTimerPause(false);
               setTimerStart(true);
               setCurrentState("working");
+              recordStartPomodor();
             }}>Cтарт</button>
           <button className="timer__btn-stop">Стоп</button>
         </div>}
@@ -121,6 +159,7 @@ export const Timer = observer(() => {
                     setTimerStart(false);
                     setTimerPause(true);
                     setCurrentState("working-pause");
+                    recordStartPause();
                 }}>Пауза</button>
               <button className="timer__btn-stop"
                     onClick={() => {
@@ -128,6 +167,8 @@ export const Timer = observer(() => {
                     setTimerStart(false);
                     setCurrentState("working-waiting");
                     setTime(timeWork);
+                    setStartPomodor(0);
+                    updatStopList();
                 }}>Стоп</button>
             </div>
         )}
@@ -138,6 +179,7 @@ export const Timer = observer(() => {
                     setTimerPause(false);
                     setTimerStart(true);
                     setCurrentState("working");
+                    updatePauseList();
                 }}>Продолжить</button>
                 <button className="timer__btn-ready"
                 onClick={() => {
@@ -146,6 +188,7 @@ export const Timer = observer(() => {
                     setTimerStart(false);
                     setCurrentState("working-waiting");
                     setTime(timeWork);
+                    updatePomodoroList();
                 }}>Сделано</button>
             </div>
         )}
@@ -156,6 +199,7 @@ export const Timer = observer(() => {
                         setTimerStart(false);
                         setTimerPause(true);
                         setCurrentState("break-pause");
+                        recordStartPause();
                     }}>Пауза</button>
                 <button className="timer__btn-skip"
                    onClick={() => {
@@ -172,6 +216,7 @@ export const Timer = observer(() => {
                     setTimerStart(true);
                     setTimerPause(false);
                     setCurrentState("break-active");
+                    updatePauseList();
                 }}>Продолжить</button>
                 <button className="timer__btn-skip"
                    onClick={() => {
