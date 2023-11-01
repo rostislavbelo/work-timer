@@ -188,6 +188,7 @@ export const Timer = observer(() => {
                     setTimerStart(false);
                     setCurrentState("working-waiting");
                     setTime(timeWork);
+                    updatePauseList();
                     updatePomodoroList();
                 }}>Сделано</button>
             </div>
@@ -224,6 +225,7 @@ export const Timer = observer(() => {
                     setTimerStart(false);
                     setCurrentState("working-waiting");
                     setTime(timeWork);
+                    updatePauseList();
                 }}>Пропустить</button>
             </div>
         )}

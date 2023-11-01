@@ -130,13 +130,19 @@
     font-weight: 700;
     line-height: 33px;
     text-align : left;
+    color: #333333;
 }
 
-.statistics__day-time span {
+.statistics__day-time div {
     font-size  : 16px;
     font-weight: 400;
     line-height: 28px;
     text-align : left;
+    color: #333333;
+}
+
+.statistics__day-time div span {
+    color: #DC3E22;
 }
 
 

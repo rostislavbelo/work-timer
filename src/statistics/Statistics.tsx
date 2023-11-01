@@ -4,91 +4,221 @@ import tomato from "../icons/tomato.svg";
 import tomatoSmall from "../icons/tomatoSmall.svg";
 import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
+import { changeWordEndings } from "../serviceFunctions/changeWordEndings";
 
 export const Statistics = observer(() => {
-
   const FILTER_ITEM_TITLES = [
     "Эта неделя",
     "Прошедшая неделя",
     "2 недели назад",
-  ]
+  ];
+
+  const POMODORS_WORD = {
+    firstState: 'помидоров',
+    secondState: 'помидор',
+    thirdState: 'помидора',
+    fourthState: 'помидоров',
+  }
 
   //Состояния дропдауна фильтра
   const [filtrCurrentValue, setFilterCurrentValue] = useState('Эта неделя');
   const [filtrActive, setFilterActive] = useState(false);
 
+  //Выбор текущего дня недели
   const [day, setDay] = useState('Понедельник');
   
-  const [timeWork, setTimeWork] = useState('Нет данных');
+  //Количество рабочего времени в день
+  const [timeWork, setTimeWork] = useState(<div>Нет данных</div>);
 
+  //Выбор недельного периода
+  const [selectWeek, setSelectWeek] = useState('thisWeek');
 
-  //Калькуляция статистики
+  //Выбор дня недели
+  const [selectDay, setSelectDay] = useState(new Date().getDay());
+
+  //Количество помидоров дня
+  const [coumtPomodor, setCoumtPomodor] = useState(0);
+
+  //Время на паузе
+  const [timePause, setTimePause] = useState(0);
+
+  //Строка в разметке - время на паузе
+  const [timePauseText, setTimePauseText] = useState('0м');
+
+  //Фокус (рабочее время / рабочее время + паузы)
+  const [focus, setFocus] = useState(0);
+
+  //Стор статистики
   const { statsStore } = useStore();
 
   useEffect(() => {
+    //Текстовые константы
+    const DAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Cуббота'];
+
+     const MINUTES_WORD = {
+      firstState: 'минут',
+      secondState: 'минута',
+      thirdState: 'минуты',
+      fourthState: 'минут',
+    }
+  
+    const HOURS_WORD = {
+      firstState: 'часов',
+      secondState: 'часа',
+      thirdState: 'часа',
+      fourthState: 'часов',
+    }
+    
+
     let today = new Date();
-    let yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate()-1, 23, 59, 59, 999);
+    let yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate()-1, 23, 59, 59, 999).getTime();
     let dayWeekToday =  today.getDay();
 
-    const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Cуббота'];
-
     //Сутки в миллисекундах 
-    const MS_DAY = 8640000000;
+    const MS_DAY = 86400000;    
 
     //Получение обекта с недельными массивами: эта неделя, прошлая, позапрошлая
-    function getWeeksGroops(list: [number, number][]) {
-      let data:number[];
+    function getWeeksGroops(list: [number, number][]) {      
 
       function filterWeeks() {
-        return {thisWeek: list.filter((element) => {return element[0] > data[0]}), 
-        lastWeek: list.filter((element) => {return element[0] < data[0] && element[0] > data[0] - MS_DAY * 7}),
-        beforeLastWeek: list.filter((element) => {return element[0] < data[0] - MS_DAY * 7 && element[0] > data[0] - MS_DAY * 14})};
+        return {thisWeek: list.filter((element) => {return element[0] > data}), 
+        lastWeek: list.filter((element) => {return element[0] < data && element[0] > data - MS_DAY * 7}),
+        beforeLastWeek: list.filter((element) => {return element[0] < data - MS_DAY * 7 && element[0] > data - MS_DAY * 14})};
       }
+
+      let data:number;
 
       switch (dayWeekToday) {
         case 1:
-          data = [yesterday.getTime(), today.getTime()];
+          data = Date.now();
           return filterWeeks()
         case 2:
-          data = [yesterday.getTime() - MS_DAY, today.getTime()];
+          data = yesterday - MS_DAY;
           return filterWeeks()
         case 3:
-          data = [yesterday.getTime() - MS_DAY * 2, today.getTime()];
+          data = yesterday - MS_DAY * 2;
           return filterWeeks()
         case 4:
-          data = [yesterday.getTime() - MS_DAY * 3, today.getTime()];  
+          data = yesterday - MS_DAY * 3;  
           return filterWeeks()
         case 5:
-          data = [yesterday.getTime() - MS_DAY * 4, today.getTime()]; 
+          data = yesterday - MS_DAY * 4; 
           return filterWeeks()
         case 6:
-          data = [yesterday.getTime() - MS_DAY * 5, today.getTime()]; 
+          data = yesterday - MS_DAY * 5; 
           return filterWeeks()
         case 0:
-          data = [yesterday.getTime() - MS_DAY * 6, today.getTime()]; 
+          data = yesterday - MS_DAY * 6; 
           return filterWeeks()                                      
       }
     }
 
-    setDay(days[today.getDay()])
+    setDay(DAYS[selectDay])
 
     let listPomodors = getWeeksGroops(statsStore.pomodoroList);
+    let listPauses = getWeeksGroops(statsStore.pauseList);
   
     function getWorkTimeDay() {
-      if (!listPomodors) return;
-      let result = 0;
-      let workToday = listPomodors.thisWeek.filter((element) => {
-        return new Date(element[0]).getDay() === new Date().getDay();
+      if (!listPomodors || !listPauses) return;
+      let resultWorkTime = 0;
+      let resultPausesTime = 0;
+      let currentWeekPomodors =  listPomodors.thisWeek; 
+      let currentWeekPauses =  listPauses.thisWeek; 
+
+      switch (selectWeek) {
+        case 'thisWeek':
+          currentWeekPomodors = listPomodors.thisWeek;
+          currentWeekPauses = listPauses.thisWeek;
+          break
+        case 'lastWeek':
+          currentWeekPomodors = listPomodors.lastWeek;
+          currentWeekPauses = listPauses.lastWeek;
+          break
+        case 'beforeLastWeek':
+          currentWeekPomodors = listPomodors.beforeLastWeek;
+          currentWeekPauses = listPauses.beforeLastWeek;
+          break
+      }
+
+      let workToday = currentWeekPomodors.filter((element) => {
+        return new Date(element[0]).getDay() === selectDay;
+        
       });
+
+      let pauseToday = currentWeekPauses.filter((element) => {
+        return new Date(element[0]).getDay() === selectDay;        
+      });
+
       workToday.forEach((element) => {
-        result = result + (element[1] - element[0]);
+        resultWorkTime = resultWorkTime + (element[1] - element[0]);
       })
 
-      return String(result/1000/60);      
+      pauseToday.forEach((element) => {
+        resultPausesTime = resultPausesTime + (element[1] - element[0]);
+      })
+
+      let totalTime = resultPausesTime + resultWorkTime;
+      
+      let calculateFocus = Math.round((1 / (totalTime / resultWorkTime) * 100)) || 0;
+
+      setFocus(calculateFocus);
+
+      setTimePause(resultPausesTime / 1000);
+
+      setCoumtPomodor(workToday.length);
+
+      return resultWorkTime;      
+    };
+   
+
+    function getStringWorkTime() {
+      let getTime = getWorkTimeDay();
+      if (!getTime) return <div>Нет данных</div>;
+      let time = getTime / 1000;
+      let result = <div>Нет данных</div>;
+
+      if(time === 0) {
+        result = <div>Нет данных</div>
+        } 
+      if (time / 60 / 60 >= 1 && time / 60 % 60 !== 0) {
+        result = <div>Вы работали над задачами в течение <span>{changeWordEndings(Math.floor((time / 60 / 60)), HOURS_WORD)}</span> <span>{changeWordEndings(Math.round(time / 60 % 60), MINUTES_WORD)}</span></div>
+      }
+      if (time / 60 / 60 < 1 && time / 60 % 60 !== 0) {
+        result = <div>Вы работали над задачами в течение <span>{changeWordEndings(Math.round(time / 60 % 60), MINUTES_WORD)}</span></div>
+      }
+      if (time / 60 / 60 >= 1 && time / 60 % 60 === 0) {
+        result = <div>Вы работали над задачами в течение <span>{changeWordEndings(Math.floor((time / 60 / 60)), HOURS_WORD)}</span></div>
+      }
+      return result;
     }
 
-    setTimeWork('Вы работали ' + getWorkTimeDay() + ' минут');
-  
+    setTimeWork(getStringWorkTime());
+
+    function getStringPause() {
+      let result = '0м';
+
+      if (timePause / 60 / 60 >= 1 && timePause / 60 % 60 !== 0) {
+        result = `${Math.floor((timePause / 60 / 60))}ч ${Math.round(timePause / 60 % 60)}м`
+      }
+      if (timePause / 60 / 60 < 1 && timePause / 60 % 60 !== 0) {
+        result = `${Math.round(timePause / 60 % 60)}м`
+      }
+      if (timePause / 60 / 60 >= 1 && timePause / 60 % 60 === 0) {
+        result = `${Math.floor((timePause / 60 / 60))}ч`
+      }
+      return result;
+    }
+
+    setTimePauseText(getStringPause());
+
+
+    // let yyyyyyy = statsStore.pomodoroList.filter((el) => {
+
+    //   return el[0] > Date.now();
+    // })
+
+    
+    // console.log(yyyyyyy);
 
 
     // localStorage.setItem('pomodoroStoreList', JSON.stringify(
@@ -114,9 +244,7 @@ export const Statistics = observer(() => {
 
   //   console.log(eee());
 
-
-    console.log(statsStore.pomodoroList, today, yesterday, dayWeekToday, getWeeksGroops(statsStore.pomodoroList), getWeeksGroops(statsStore.pauseList), getWeeksGroops(statsStore.stopList));
-  },[statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList]);
+  },[selectDay, selectWeek, statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList, timePause]);
 
 
   return (
@@ -129,9 +257,21 @@ export const Statistics = observer(() => {
           </svg>
           <span className="statistics__filter-current-value">{filtrCurrentValue}</span>
           {filtrActive && (<div className="statistics__filter-list">
-            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[0])}}>{FILTER_ITEM_TITLES[0]}</button>
-            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[1])}}>{FILTER_ITEM_TITLES[1]}</button>
-            <button className="statistics__filter-btn" onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[2])}}>{FILTER_ITEM_TITLES[2]}</button>
+            <button className="statistics__filter-btn" 
+              onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[0]); 
+              setSelectWeek('thisWeek')}}>
+                {FILTER_ITEM_TITLES[0]}
+            </button>
+            <button className="statistics__filter-btn" 
+              onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[1]); 
+              setSelectWeek('lastWeek')}}>
+                {FILTER_ITEM_TITLES[1]}
+            </button>
+            <button className="statistics__filter-btn" 
+              onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[2]); 
+              setSelectWeek('beforeLastWeek')}}>
+                {FILTER_ITEM_TITLES[2]}
+            </button>
           </div>)}
         </div>
       </div>
@@ -139,17 +279,17 @@ export const Statistics = observer(() => {
         <div className="statistics__day-stat">
           <div className="statistics__day-time">
             <p>{day}</p>
-            <span>{timeWork}</span>
+            {timeWork}
           </div>
           <div className="statistics__day-tasks">
-            {/* <img src={tomato} alt="Tomato" /> */}
-            <div className="statistics__day-tasks-info">
+            {coumtPomodor < 1 && (<img src={tomato} alt="Tomato" />)}
+            {coumtPomodor > 0 && (<div className="statistics__day-tasks-info">
               <div className="statistics__img-info">
                 <img src={tomatoSmall} alt="Tomato small" />
-                <span>х 2</span>
+                <span>{`х ${coumtPomodor}`}</span>
               </div>
-              <span>2 помидора</span>
-            </div>
+              <span>{changeWordEndings(coumtPomodor, POMODORS_WORD)}</span>
+            </div>)}
           </div>
         </div>
         <div className="statistics__graph">
@@ -158,13 +298,13 @@ export const Statistics = observer(() => {
           <div className="statistics__graph-line"><span>1</span></div>
           <div className="statistics__graph-line"><span>1</span></div>
           <div className="statistics__line-days">
-            <div>Пн<span></span></div>
-            <div>Вт<span></span></div>
-            <div>Ср<span></span></div>
-            <div>Чт<span></span></div>
-            <div>Пт<span></span></div>
-            <div>Сб<span></span></div>
-            <div>Вс<span></span></div>            
+            <div onClick={() => {setSelectDay(1)}}>Пн<span></span></div>
+            <div onClick={() => {setSelectDay(2)}}>Вт<span></span></div>
+            <div onClick={() => {setSelectDay(3)}}>Ср<span></span></div>
+            <div onClick={() => {setSelectDay(4)}}>Чт<span></span></div>
+            <div onClick={() => {setSelectDay(5)}}>Пт<span></span></div>
+            <div onClick={() => {setSelectDay(6)}}>Сб<span></span></div>
+            <div onClick={() => {setSelectDay(0)}}>Вс<span></span></div>            
           </div>
         </div>
       </div>
@@ -172,7 +312,7 @@ export const Statistics = observer(() => {
         <div className="statistics__bottom-item">
           <div>
             <p>Фокус</p>
-            <span>10%</span>
+            <span>{focus}%</span>
           </div>
           <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -184,7 +324,7 @@ export const Statistics = observer(() => {
         <div className="statistics__bottom-item">
           <div>
             <p>Время на паузе</p>
-            <span>10м</span>
+            <span>{timePauseText}</span>
           </div>
           <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
