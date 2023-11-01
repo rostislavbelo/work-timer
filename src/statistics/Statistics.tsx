@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./statistics.css";
 import tomato from "../icons/tomato.svg";
 import tomatoSmall from "../icons/tomatoSmall.svg";
 import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
 import { changeWordEndings } from "../serviceFunctions/changeWordEndings";
+import { useCloseModal } from "../hooks/useCloseModal";
 
 export const Statistics = observer(() => {
   const FILTER_ITEM_TITLES = [
@@ -58,6 +59,10 @@ export const Statistics = observer(() => {
 
   //Стор статистики
   const { statsStore } = useStore();
+
+  //Закрытие фильтра по клику вне и esc
+  let refFilter = useRef(null);
+  useCloseModal(() => {setFilterActive(false)},refFilter)
 
   useEffect(() => {
     //Текстовые константы
@@ -179,18 +184,23 @@ export const Statistics = observer(() => {
 
       workToday.forEach((element) => {
         resultWorkTime = resultWorkTime + (element[1] - element[0]);
-      })
+      });
 
+      //Максимальный неучитываемый размер паузы в мс, паузы короче 3сек не учитываем в расчёте фокуса.  
+      const pauseLimit = 3000;
+      //Расчитываем время пауз
       pauseToday.forEach((element) => {
+        if (element[1] - element[0] > pauseLimit) {
         resultPausesTime = resultPausesTime + (element[1] - element[0]);
-      })
+        }
+      });
 
       let totalTime = resultPausesTime + resultWorkTime;
       
       let calculateFocus = Math.round((1 / (totalTime / resultWorkTime) * 100)) || 0;
 
 
-      if (resultPausesTime > 0 && !isNaN(resultPausesTime)) {
+      if (Math.round(resultPausesTime / 1000 / 60) >= 1 && !isNaN(resultPausesTime)) {
         setPauseActive('active');
       } else {setPauseActive('no-active')};
 
@@ -247,6 +257,7 @@ export const Statistics = observer(() => {
     }
 
     setTimePauseText(getStringPause());
+
   },[selectDay, selectWeek, statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList, timePause]);
 
 
@@ -254,7 +265,7 @@ export const Statistics = observer(() => {
     <section className="statistics">
       <div className="statistics__top">
         <h1>Ваша активность</h1>
-        <div className="statistics__filter" id={String(filtrActive)} onClick={() => {setFilterActive(!filtrActive)}}>
+        <div className="statistics__filter" id={String(filtrActive)} onClick={() => {setFilterActive(!filtrActive)}} ref={refFilter}>
           <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M1 9L8 2L15 9" stroke="#B7280F" strokeWidth="2"/>
           </svg>

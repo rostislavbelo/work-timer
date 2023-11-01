@@ -97,6 +97,7 @@
     color      : #333333;
     width      : 102%;
     background-color: #F4F4F4;
+    overflow: hidden;
 }
 
 .taskManager__title input::placeholder {
