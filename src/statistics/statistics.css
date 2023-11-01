@@ -71,7 +71,7 @@
     display         : flex;
     align-items     : center;
     padding-left    : 6%;
-    cursor: pointer;
+    cursor          : pointer;
 }
 
 .statistics__line-days span {
@@ -130,7 +130,7 @@
     font-weight: 700;
     line-height: 33px;
     text-align : left;
-    color: #333333;
+    color      : #333333;
 }
 
 .statistics__day-time div {
@@ -138,7 +138,7 @@
     font-weight: 400;
     line-height: 28px;
     text-align : left;
-    color: #333333;
+    color      : #333333;
 }
 
 .statistics__day-time div span {
@@ -232,6 +232,7 @@
     letter-spacing: 0em;
     text-align    : left;
     color         : #999999;
+    min-width     : 24%;
 }
 
 .statistics__img-info img {
@@ -300,7 +301,7 @@
 
 #true.statistics__filter svg {
     transform: scale(1, -1);
-    z-index: 11;
+    z-index  : 11;
 }
 
 .statistics__filter-list {
@@ -308,5 +309,29 @@
     left    : 0;
     top     : 0;
     width   : 100%;
-    z-index: 10;
+    z-index : 10;
+}
+
+.statistics__bottom-item.focus#active {
+    background-color: #FFDDA9;
+}
+
+.statistics__bottom-item.focus#active svg {
+    stroke: #FFAE35;
+}
+
+.statistics__bottom-item.stop-count#active {
+    background-color: #C5F1FF;
+}
+
+.statistics__bottom-item.stop-count#active svg {
+    stroke: #7FC2D7;
+}
+
+.statistics__bottom-item.pause#active {
+    background-color: #DFDCFE;
+}
+
+.statistics__bottom-item.pause#active svg {
+    stroke: #9C97D7;
 }

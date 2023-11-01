@@ -48,6 +48,14 @@ export const Statistics = observer(() => {
   //Фокус (рабочее время / рабочее время + паузы)
   const [focus, setFocus] = useState(0);
 
+  //Количество остановок
+  const [stopCount, setStopCount] = useState(0);
+
+  //Ативное сосотояние поля Фокус
+  const [focusActive, setFocusActive] = useState('');
+  const [pauseActive, setPauseActive] = useState('');
+  const [stopActive, setStopActive] = useState('');
+
   //Стор статистики
   const { statsStore } = useStore();
 
@@ -69,9 +77,13 @@ export const Statistics = observer(() => {
       fourthState: 'часов',
     }
     
-
+    //Сегодня
     let today = new Date();
+
+    //Выделяем край вчерашнего дня - 23.59.59.999
     let yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate()-1, 23, 59, 59, 999).getTime();
+
+    //Сегодняшний номер дня недели
     let dayWeekToday =  today.getDay();
 
     //Сутки в миллисекундах 
@@ -117,26 +129,31 @@ export const Statistics = observer(() => {
 
     let listPomodors = getWeeksGroops(statsStore.pomodoroList);
     let listPauses = getWeeksGroops(statsStore.pauseList);
+    let listStop = getWeeksGroops(statsStore.stopList);
   
     function getWorkTimeDay() {
-      if (!listPomodors || !listPauses) return;
+      if (!listPomodors || !listPauses || !listStop) return;
       let resultWorkTime = 0;
       let resultPausesTime = 0;
       let currentWeekPomodors =  listPomodors.thisWeek; 
       let currentWeekPauses =  listPauses.thisWeek; 
+      let currentWeekStop =  listStop.thisWeek; 
 
       switch (selectWeek) {
         case 'thisWeek':
           currentWeekPomodors = listPomodors.thisWeek;
           currentWeekPauses = listPauses.thisWeek;
+          currentWeekStop = listStop.thisWeek; 
           break
         case 'lastWeek':
           currentWeekPomodors = listPomodors.lastWeek;
           currentWeekPauses = listPauses.lastWeek;
+          currentWeekStop = listStop.lastWeek; 
           break
         case 'beforeLastWeek':
           currentWeekPomodors = listPomodors.beforeLastWeek;
           currentWeekPauses = listPauses.beforeLastWeek;
+          currentWeekStop = listStop.beforeLastWeek
           break
       }
 
@@ -148,6 +165,17 @@ export const Statistics = observer(() => {
       let pauseToday = currentWeekPauses.filter((element) => {
         return new Date(element[0]).getDay() === selectDay;        
       });
+
+      let stopToday = currentWeekStop.filter((element) => {
+        return new Date(element[0]).getDay() === selectDay;        
+      });
+
+
+      setStopCount(stopToday.length);
+
+      if (stopToday.length > 0 && !isNaN(stopToday.length)) {
+        setStopActive('active');
+      } else {setStopActive('no-active')};
 
       workToday.forEach((element) => {
         resultWorkTime = resultWorkTime + (element[1] - element[0]);
@@ -161,7 +189,16 @@ export const Statistics = observer(() => {
       
       let calculateFocus = Math.round((1 / (totalTime / resultWorkTime) * 100)) || 0;
 
+
+      if (resultPausesTime > 0 && !isNaN(resultPausesTime)) {
+        setPauseActive('active');
+      } else {setPauseActive('no-active')};
+
       setFocus(calculateFocus);
+      if(!isNaN(calculateFocus) && calculateFocus > 0) {
+        setFocusActive('active');
+        console.log(calculateFocus)
+       } else {setFocusActive('no-active');}
 
       setTimePause(resultPausesTime / 1000);
 
@@ -210,40 +247,6 @@ export const Statistics = observer(() => {
     }
 
     setTimePauseText(getStringPause());
-
-
-    // let yyyyyyy = statsStore.pomodoroList.filter((el) => {
-
-    //   return el[0] > Date.now();
-    // })
-
-    
-    // console.log(yyyyyyy);
-
-
-    // localStorage.setItem('pomodoroStoreList', JSON.stringify(
-    // ));
-
-    // function eee(ar:number[][]) {
-    //   let data = ar.slice();
-    //   let result:number[][] = []
-    //   data.forEach((element:number[]) => { 
-    //   result.push([element[0], element[1]]);//1
-    //   result.push([element[0]-MS_DAY, element[1]-MS_DAY]);//2
-    //    result.push([element[0]-MS_DAY*2, element[1]-MS_DAY*2]);//3
-    //    result.push([element[0]-MS_DAY*3, element[1]-MS_DAY*3]);//4
-    //    result.push([element[0]-MS_DAY*6, element[1]-MS_DAY*6]);//5
-    //      result.push([element[0]-MS_DAY*7, element[1]-MS_DAY*7]);//6
-    //      result.push([element[0]-MS_DAY*8, element[1]-MS_DAY*8]);//7
-    //      result.push([element[0]-MS_DAY*10, element[1]-MS_DAY*10]);//8
-
-    //   });
-      
-    //   return result;
-    // }
-
-  //   console.log(eee());
-
   },[selectDay, selectWeek, statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList, timePause]);
 
 
@@ -309,7 +312,7 @@ export const Statistics = observer(() => {
         </div>
       </div>
       <div className="statistics__bottom-list">
-        <div className="statistics__bottom-item">
+        <div className="statistics__bottom-item focus" id={focusActive}>
           <div>
             <p>Фокус</p>
             <span>{focus}%</span>
@@ -321,7 +324,7 @@ export const Statistics = observer(() => {
           </svg>
 
         </div>
-        <div className="statistics__bottom-item">
+        <div className="statistics__bottom-item pause" id={pauseActive}>
           <div>
             <p>Время на паузе</p>
             <span>{timePauseText}</span>
@@ -330,12 +333,11 @@ export const Statistics = observer(() => {
           <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
           <path d="M64.3154 37.1579V64.3158L77.8944 77.8947" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-
         </div>
-        <div className="statistics__bottom-item">
+        <div className="statistics__bottom-item stop-count"  id={stopActive}>
           <div>
             <p>Остановки</p>
-            <span>3</span>
+            <span>{stopCount}</span>
           </div>
           <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
