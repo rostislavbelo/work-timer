@@ -48,7 +48,7 @@
     line-height: 33px;
     color      : #333333;
     margin-left: auto;
-    width: 60px;
+    width      : 60px;
 }
 
 .statistics__graph-line::before {
@@ -106,8 +106,15 @@
     position        : absolute;
     bottom          : 40px;
     background-color: #EA8A79;
-    /* height       : 115px; */
     width           : 100%;
+}
+
+.statistics__line-days div[data-active=active] {
+    color: #DC3E22;
+}
+
+.statistics__line-days div[data-active=active] span {
+    background-color: #DC3E22;
 }
 
 .statistics__day-stat {

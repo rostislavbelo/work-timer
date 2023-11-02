@@ -224,11 +224,10 @@ export const Statistics = observer(() => {
         return heightElementDiagramm;
       }
 
-      //Сэтим значения высот
+      //Сетим значения высот
       setHeightElemen(getHeightElement());
 
-
-
+      //Формируем масштабируемые подписи к линиям диаграммы
       function getValueDiagrammLine(time:number) {
         if (!maxValueWork) return <span>0</span>;
         let result = <span>0</span>;  
@@ -391,13 +390,13 @@ export const Statistics = observer(() => {
         <div className="statistics__graph-line statistics__graph-line-3"><span>{lineThree}</span></div>
           <div className="statistics__graph-line statistics__graph-line-4"><span>{lineFour}</span></div>
           <div className="statistics__line-days">
-            <div onClick={() => {setSelectDay(1)}}>Пн<span style={{height:heightElement[1] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(2)}}>Вт<span style={{height:heightElement[2] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(3)}}>Ср<span style={{height:heightElement[3] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(4)}}>Чт<span style={{height:heightElement[4] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(5)}}>Пт<span style={{height:heightElement[5] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(6)}}>Сб<span style={{height:heightElement[6] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(0)}}>Вс<span style={{height:heightElement[0] + 'px'}}></span></div>            
+            <div onClick={() => {setSelectDay(1)}} data-active={selectDay === 1 ? 'active' : ''}>Пн<span style={{height:heightElement[1] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(2)}} data-active={selectDay === 2 ? 'active' : ''}>Вт<span style={{height:heightElement[2] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(3)}} data-active={selectDay === 3 ? 'active' : ''}>Ср<span style={{height:heightElement[3] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(4)}} data-active={selectDay === 4 ? 'active' : ''}>Чт<span style={{height:heightElement[4] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(5)}} data-active={selectDay === 5 ? 'active' : ''}>Пт<span style={{height:heightElement[5] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(6)}} data-active={selectDay === 6 ? 'active' : ''}>Сб<span style={{height:heightElement[6] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(0)}} data-active={selectDay === 0 ? 'active' : ''}>Вс<span style={{height:heightElement[0] + 'px'}}></span></div>            
           </div>
         </div>
       </div>
