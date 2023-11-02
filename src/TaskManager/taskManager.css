@@ -207,3 +207,7 @@
     text-transform: uppercase;
     user-select   : none;
 }
+
+[data-count=zero] {
+ border-color: #DC3E22;
+}

@@ -101,7 +101,7 @@ export const TaskManager = observer(() => {
       <ul className="taskManager__task-list" ref={refPopup}>      
           {tasksStore.list.map((l) => (
             <li className="taskManager__task" key={l.id}>
-              <span className="taskManager__count">{l.count}</span>   
+              <span className="taskManager__count" data-count={l.count === 0 ? 'zero' : ''}>{l.count}</span>   
               <span className="taskManager__title">{l.title}
                 {l.rename && (
                   <input type="text" placeholder={l.title} maxLength={40} ref={refRename} autoFocus onBlur={() => {handlerRename(l.id)}}></input>

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import "./timer.css";
 import iconPlus from "../icons/iconPlus.svg";
+import service from "../icons/service.svg";
 import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
 import { action } from "mobx";
@@ -88,13 +89,11 @@ export const Timer = observer(() => {
   }); 
   
   const handlerMinus = action(() => {
-    console.log('122222')
     if (tasksStore.list[0].count >= 1) {
         tasksStore.list[0].count = tasksStore.list[0].count - 1; 
         storeTasks('tasksStoreList', tasksStore.list);
     }
   });
-
 
   //Автопереключение помидор/перерыв
   useEffect(() => {
@@ -123,8 +122,43 @@ export const Timer = observer(() => {
     setNumberPomodor(1);
     setNumberBreak(1)
   },[taskActive, timeWork]);
-  
 
+
+  //Открытие попапа настроек
+  const [settingPopup, setSettingPopup] = useState(false);
+  
+  //const refInputPomodor = useRef<HTMLInputElement>(null);
+
+  // Ограничения ввода в инпуты настроек таймера
+  const [valuePomodor, setValuePomodor] = useState('');
+  const [valuePause, setValuePause] = useState('')
+
+  const MIN = 1;
+  const MAX = 59;
+
+  function handleChangePomodor(event: ChangeEvent<HTMLInputElement>) {
+
+    if (Number(event.target.value) > MAX) {
+        setValuePomodor('59');      
+        handlerChangeTimeWork(59)} 
+    else if (Number(event.target.value) < MIN) { 
+        setValuePomodor('1');
+        handlerChangeTimeWork(1)}
+    else {setValuePomodor(event.target.value);
+            handlerChangeTimeWork(Number(event.target.value))}
+    }
+    
+  function handleChangePause(event: ChangeEvent<HTMLInputElement>) {
+    if (Number(event.target.value) >= MIN && Number(event.target.value) <= MAX) {
+        setValuePause(event.target.value);
+    }
+  }
+
+  //Переустановка настроек в сторе
+  const handlerChangeTimeWork = action((value:number) => {
+    tasksStore.timeWork = value;
+    storeTasks('tasksStoreList', tasksStore.list);
+  })
 
   return (
     <div className="timer" id={currentState}>
@@ -132,6 +166,15 @@ export const Timer = observer(() => {
         <span className="timer__title">{tasksStore.list[0].title}</span>
         {currentState.includes('working') && (<span className="timer__number">{`Помидор ${numberPomodor}`}</span>)}
         {currentState.includes("break") && (<span className="timer__number">{`Перерыв ${numberBreak}`}</span>)}
+      </div>
+      <div className="timer__settings">
+        <button onClick={() => {setSettingPopup(!settingPopup)}}>
+            <img src={service} alt="Service" />
+        </button>
+        {settingPopup && (<div className="timer__settings-popup">
+           <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="number" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus/>Количество минут на 1 помидор</label>
+           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="number" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} />Количество минут на 1 перерыв</label>  
+        </div>)}
       </div>
       <div className="timer__clock">
         <div className="timer__display">
