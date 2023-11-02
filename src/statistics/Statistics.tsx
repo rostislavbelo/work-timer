@@ -6,6 +6,7 @@ import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
 import { changeWordEndings } from "../serviceFunctions/changeWordEndings";
 import { useCloseModal } from "../hooks/useCloseModal";
+import { JSX } from "react/jsx-runtime";
 
 export const Statistics = observer(() => {
   const FILTER_ITEM_TITLES = [
@@ -57,6 +58,16 @@ export const Statistics = observer(() => {
   const [pauseActive, setPauseActive] = useState('');
   const [stopActive, setStopActive] = useState('');
 
+  //Высота элементов диаграммы
+  const [heightElement, setHeightElemen] = useState([0, 0, 0, 0, 0, 0, 0]);
+
+  //Масштабируемые значения линий диаграммы
+  const [lineOne, setLineOne] = useState(<span>0</span>);
+  const [lineTwo, setLineTwo] = useState(<span>0</span>);
+  const [lineThree, setLineThree] = useState(<span>0</span>);
+  const [lineFour, setLineFour] = useState(<span>0</span>);
+
+
   //Стор статистики
   const { statsStore } = useStore();
 
@@ -70,7 +81,7 @@ export const Statistics = observer(() => {
 
      const MINUTES_WORD = {
       firstState: 'минут',
-      secondState: 'минута',
+      secondState: 'минуты',
       thirdState: 'минут',
       fourthState: 'минут',
     }
@@ -78,7 +89,7 @@ export const Statistics = observer(() => {
     const HOURS_WORD = {
       firstState: 'часов',
       secondState: 'часа',
-      thirdState: 'часа',
+      thirdState: 'часов',
       fourthState: 'часов',
     }
     
@@ -160,20 +171,20 @@ export const Statistics = observer(() => {
           currentWeekPauses = listPauses.beforeLastWeek;
           currentWeekStop = listStop.beforeLastWeek
           break
-      }
+      };
 
-      let workToday = currentWeekPomodors.filter((element) => {
-        return new Date(element[0]).getDay() === selectDay;
-        
-      });
 
-      let pauseToday = currentWeekPauses.filter((element) => {
-        return new Date(element[0]).getDay() === selectDay;        
-      });
+      function getTimeDay(typeEvent:number[][], day:number) {
+        return typeEvent.filter((element) => {
+          return new Date(element[0]).getDay() === day;        
+        });
+      };
 
-      let stopToday = currentWeekStop.filter((element) => {
-        return new Date(element[0]).getDay() === selectDay;        
-      });
+      let workToday = getTimeDay(currentWeekPomodors, selectDay);
+
+      let pauseToday = getTimeDay(currentWeekPauses, selectDay);
+
+      let stopToday = getTimeDay(currentWeekStop, selectDay);
 
 
       setStopCount(stopToday.length);
@@ -182,10 +193,81 @@ export const Statistics = observer(() => {
         setStopActive('active');
       } else {setStopActive('no-active')};
 
-      workToday.forEach((element) => {
+        workToday.forEach((element) => {
         resultWorkTime = resultWorkTime + (element[1] - element[0]);
       });
 
+      
+      let valuesTimeWork:number[] = [];
+
+      //Вычисляем продолжительность рабочего времени для одного дня
+      function getListValuesWeek(i:number) {
+        let valueTimeDay:number = 0;
+        getTimeDay(currentWeekPomodors, i).forEach((element) => {
+          valueTimeDay = valueTimeDay + (element[1] - element[0]);
+        });
+        return valueTimeDay;
+      }      
+
+      //Формируем массив значений времени для каждого дня текущей недели
+      for (let i:number = 0; i <= 6; i++) {
+        valuesTimeWork.push(getListValuesWeek(i))
+      };
+
+      //Вычисляем значение самого продуктивного рабочего дня - 100% на диаграмме.
+      let maxValueWork = Math.floor(Math.max(...valuesTimeWork) / 1000);
+
+      //Получаем значение высоты элементов диаграммы. 
+      function getHeightElement() {
+        if (isNaN(maxValueWork) || maxValueWork === 0) return [0, 0, 0, 0, 0, 0, 0];
+        let heightElementDiagramm = valuesTimeWork.map((element) => {return Math.round(349 * (1 / (maxValueWork / (element / 1000))))}) || [0,0,0,0,0,0,0];
+        return heightElementDiagramm;
+      }
+
+      //Сэтим значения высот
+      setHeightElemen(getHeightElement());
+
+
+
+      function getValueDiagrammLine(time:number) {
+        if (!maxValueWork) return <span>0</span>;
+        let result = <span>0</span>;  
+        if(time === 0) {
+          result = <span>0</span>
+          } 
+        else if (time / 60 / 60 >= 1 && time / 60 % 60 !== 0) {
+          result = <span><span>{`${Math.floor((time / 60 / 60))} ч`}</span> <span>{`${Math.round(time / 60 % 60)} мин`}</span></span>
+        }
+        else if (time / 60 / 60 < 1 && time / 60 % 60 !== 0) {
+          result = <span>{`${Math.round(time / 60 % 60)} мин`}</span>
+        }
+        else if (time / 60 / 60 >= 1 && time / 60 % 60 === 0) {
+          result = <span>{`${Math.floor((time / 60 / 60))} ч`}</span>
+        } else {
+          result = <span>{`${time} сек`}</span>
+        }
+        return result;
+      }
+
+
+      function getValueLineDiagramm() {
+        const intervals = [maxValueWork, maxValueWork * 0.75, maxValueWork * 0.5, maxValueWork * 0.25];
+
+        let result: React.SetStateAction<JSX.Element>[] = []
+
+        intervals.forEach((value) => {
+          result.push(getValueDiagrammLine(value));
+        });
+
+        setLineOne(result[0]);
+        setLineTwo(result[1]);
+        setLineThree(result[2]);
+        setLineFour(result[3]);
+      }
+
+      getValueLineDiagramm();
+
+        
       //Максимальный неучитываемый размер паузы в мс, паузы короче 3сек не учитываем в расчёте фокуса.  
       const pauseLimit = 3000;
       //Расчитываем время пауз
@@ -198,7 +280,6 @@ export const Statistics = observer(() => {
       let totalTime = resultPausesTime + resultWorkTime;
       
       let calculateFocus = Math.round((1 / (totalTime / resultWorkTime) * 100)) || 0;
-
 
       if (Math.round(resultPausesTime / 1000 / 60) >= 1 && !isNaN(resultPausesTime)) {
         setPauseActive('active');
@@ -216,7 +297,6 @@ export const Statistics = observer(() => {
       return resultWorkTime;      
     };
    
-
     function getStringWorkTime() {
       let getTime = getWorkTimeDay();
       if (!getTime) return <div>Нет данных</div>;
@@ -306,18 +386,18 @@ export const Statistics = observer(() => {
           </div>
         </div>
         <div className="statistics__graph">
-          <div className="statistics__graph-line"><span>1</span></div>
-          <div className="statistics__graph-line"><span>1</span></div>
-          <div className="statistics__graph-line"><span>1</span></div>
-          <div className="statistics__graph-line"><span>1</span></div>
+          <div className="statistics__graph-line statistics__graph-line-1">{lineOne}</div>
+          <div className="statistics__graph-line statistics__graph-line-2"><span>{lineTwo}</span></div>
+        <div className="statistics__graph-line statistics__graph-line-3"><span>{lineThree}</span></div>
+          <div className="statistics__graph-line statistics__graph-line-4"><span>{lineFour}</span></div>
           <div className="statistics__line-days">
-            <div onClick={() => {setSelectDay(1)}}>Пн<span></span></div>
-            <div onClick={() => {setSelectDay(2)}}>Вт<span></span></div>
-            <div onClick={() => {setSelectDay(3)}}>Ср<span></span></div>
-            <div onClick={() => {setSelectDay(4)}}>Чт<span></span></div>
-            <div onClick={() => {setSelectDay(5)}}>Пт<span></span></div>
-            <div onClick={() => {setSelectDay(6)}}>Сб<span></span></div>
-            <div onClick={() => {setSelectDay(0)}}>Вс<span></span></div>            
+            <div onClick={() => {setSelectDay(1)}}>Пн<span style={{height:heightElement[1] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(2)}}>Вт<span style={{height:heightElement[2] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(3)}}>Ср<span style={{height:heightElement[3] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(4)}}>Чт<span style={{height:heightElement[4] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(5)}}>Пт<span style={{height:heightElement[5] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(6)}}>Сб<span style={{height:heightElement[6] + 'px'}}></span></div>
+            <div onClick={() => {setSelectDay(0)}}>Вс<span style={{height:heightElement[0] + 'px'}}></span></div>            
           </div>
         </div>
       </div>

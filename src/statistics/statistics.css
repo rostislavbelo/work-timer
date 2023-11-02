@@ -43,12 +43,12 @@
 }
 
 .statistics__graph-line span {
-    display    : block;
     font-size  : 12px;
     font-weight: 400;
     line-height: 33px;
     color      : #333333;
     margin-left: auto;
+    width: 60px;
 }
 
 .statistics__graph-line::before {
@@ -121,7 +121,7 @@
     width           : 100%;
     background-color: #ECECEC;
     margin-bottom   : 32px;
-    padding         : 25px;
+    padding         : 20px;
 }
 
 .statistics__day-time p {
@@ -272,21 +272,6 @@
 .statistics__filter button:hover {
     background-color: #dad2d2;
 }
-
-/* .statistics__filter::before {
-    display: block;
-    position: absolute;
-    content: "";
-    width: 10px;
-    height: 10px;
-    background-color: transparent;
-    border-top: 2px solid #B7280F;
-    border-right: 2px solid #B7280F;
-    transform: rotate(135deg);
-    right: 19px;
-    top: 19px;
-    z-index: 10;
-} */
 
 .statistics__filter svg {
     width     : 14px;
