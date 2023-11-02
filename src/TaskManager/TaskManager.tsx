@@ -104,7 +104,7 @@ export const TaskManager = observer(() => {
               <span className="taskManager__count">{l.count}</span>   
               <span className="taskManager__title">{l.title}
                 {l.rename && (
-                  <input type="text" placeholder={l.title} maxLength={40} ref={refRename} autoFocus onBlur={() => {handlerRename(l.id)}} onClick={() => {handlerRename(l.id)}}></input>
+                  <input type="text" placeholder={l.title} maxLength={40} ref={refRename} autoFocus onBlur={() => {handlerRename(l.id)}}></input>
                 )}
               </span>
               <div className="taskManager__menu" >

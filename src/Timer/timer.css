@@ -1,6 +1,6 @@
 .timer {
-    width : 100%;
-    height: 100%;
+    width   : 100%;
+    height  : 100%;
 }
 
 .timer__top {
@@ -14,7 +14,7 @@
     margin-bottom   : 80px;
 }
 
-#working-pause .timer__top, 
+#working-pause .timer__top,
 #working .timer__top {
     background-color: #DC3E22;
 }
@@ -34,7 +34,7 @@
 .timer__clock {
     width     : 390px;
     min-height: 180px;
-    margin    : 0 auto 41px auto;
+    margin    : 0 auto 60px auto;
     position  : relative;
 }
 
@@ -71,7 +71,7 @@
     display         : flex;
     justify-content : center;
     align-items     : center;
-    transition: background-color linear 0.2s;
+    transition      : background-color linear 0.2s;
 }
 
 .timer__btn-plus img {
@@ -85,16 +85,16 @@
 }
 
 .timer__controls {
-    max-width: 400px;
-    margin: 0 auto;
-    display: flex;
+    max-width      : 400px;
+    margin         : 0 auto;
+    display        : flex;
     justify-content: center;
 }
 
 .timer__controls [class ^="timer__controls-"] {
-    max-width: 400px;
-    margin: 0 auto;
-    display: flex;
+    max-width      : 400px;
+    margin         : 0 auto;
+    display        : flex;
     justify-content: center;
 }
 
@@ -107,10 +107,10 @@
 }
 
 .timer__controls-waiting .timer__btn-stop {
-    pointer-events: none;
+    pointer-events  : none;
     background-color: transparent;
-    border: 2px solid #c4c4c4;
-    color: #c4c4c4;
+    border          : 2px solid #c4c4c4;
+    color           : #c4c4c4;
 }
 
 
@@ -118,10 +118,10 @@
 .timer__controls-break .timer__btn-skip,
 .timer__controls-working-pause .timer__btn-ready,
 .timer__controls-working-work .timer__btn-stop {
-    pointer-events: all;
+    pointer-events  : all;
     background-color: transparent;
-    border: 2px solid #DC3E22;
-    color: #DC3E22;
+    border          : 2px solid #DC3E22;
+    color           : #DC3E22;
 }
 
 
@@ -130,7 +130,7 @@
 .timer__controls-working-pause .timer__btn-ready:hover,
 .timer__controls-working-work .timer__btn-stop:hover {
     background-color: #DC3E22;
-    color: #FFFFFF;
+    color           : #FFFFFF;
 }
 
 .timer__controls-break-pause .timer__btn-continue:hover,
@@ -139,3 +139,19 @@
     background-color: #899441;
 }
 
+.timer__notice {
+    position   : absolute;
+    color      : #DC3E22;
+    left       : 50%;
+    transform  : translateX(-50%);
+    width      : max-content;
+    font-size  : 16px;
+    font-weight: 600;
+    line-height: 17px;
+    bottom: -23px;
+}
+
+.timer__notice span {
+    display: block;
+    text-align: center;
+}

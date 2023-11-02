@@ -85,7 +85,16 @@ export const Timer = observer(() => {
     statsStore.stopList.push([Date.now()]);
     storeTasks('stopStoreList', statsStore.stopList);
     setStartPause(0); 
-  });   
+  }); 
+  
+  const handlerMinus = action(() => {
+    console.log('122222')
+    if (tasksStore.list[0].count >= 1) {
+        tasksStore.list[0].count = tasksStore.list[0].count - 1; 
+        storeTasks('tasksStoreList', tasksStore.list);
+    }
+  });
+
 
   //Автопереключение помидор/перерыв
   useEffect(() => {
@@ -93,7 +102,8 @@ export const Timer = observer(() => {
         setCurrentState("break-active");
         setTime(timeBreak);
         setNumberPomodor(numberPomodor + 1); 
-        updatePomodoroList();             
+        updatePomodoroList();
+        setTimeout(() => {handlerMinus()}, 100)
     }
     if (minCurrent === 0 && secCurrent === 0 && currentState === "break-active") {
         setCurrentState("working");
@@ -101,7 +111,7 @@ export const Timer = observer(() => {
         setNumberBreak(numberBreak + 1);
         recordStartPomodor();
     }
-  },[currentState, updatePomodoroList, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork, statsStore.pomodoroList]);
+  },[currentState, updatePomodoroList, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork, statsStore.pomodoroList, handlerMinus]);
 
   //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при его удалении. 
   let taskActive = tasksStore.list.slice()[0].id;
@@ -113,6 +123,7 @@ export const Timer = observer(() => {
     setNumberPomodor(1);
     setNumberBreak(1)
   },[taskActive, timeWork]);
+  
 
 
   return (
@@ -139,7 +150,8 @@ export const Timer = observer(() => {
           }}>
           <img src={iconPlus} alt="Plus" />
         </button>
-      </div>
+        {tasksStore.list[0].count < 1 && (<div className="timer__notice"><span>Обратите внимание!</span><span>У выполняемой задачи закончились запланированные помидоры!</span></div>)}
+      </div>      
       <div className="timer__controls">
         { currentState === "working-waiting" && <div className="timer__controls-waiting">
           <button
@@ -190,6 +202,8 @@ export const Timer = observer(() => {
                     setTime(timeWork);
                     updatePauseList();
                     updatePomodoroList();
+
+                    handlerMinus()
                 }}>Сделано</button>
             </div>
         )}

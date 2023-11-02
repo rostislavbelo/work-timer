@@ -71,7 +71,7 @@ export const Statistics = observer(() => {
      const MINUTES_WORD = {
       firstState: 'минут',
       secondState: 'минута',
-      thirdState: 'минуты',
+      thirdState: 'минут',
       fourthState: 'минут',
     }
   
@@ -207,7 +207,6 @@ export const Statistics = observer(() => {
       setFocus(calculateFocus);
       if(!isNaN(calculateFocus) && calculateFocus > 0) {
         setFocusActive('active');
-        console.log(calculateFocus)
        } else {setFocusActive('no-active');}
 
       setTimePause(resultPausesTime / 1000);

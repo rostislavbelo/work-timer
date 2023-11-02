@@ -114,6 +114,11 @@
     width           : 30px;
     height          : 30px;
     border-radius   : 50%;
+    transition: opacity linear 0.2s;
+}
+
+.taskManager__btn:hover {
+    opacity: 0.7;
 }
 
 .taskManager__menu {
