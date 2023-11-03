@@ -1,11 +1,13 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import "./timer.css";
 import iconPlus from "../icons/iconPlus.svg";
 import service from "../icons/service.svg";
+import iconX from "../icons/iconX.svg";
 import { useStore } from "../store";
 import { observer } from "mobx-react-lite";
 import { action } from "mobx";
 import { storeTasks } from "../serviceFunctions/keepLocalStorage";
+import { useCloseModal } from "../hooks/useCloseModal";
 
 export const Timer = observer(() => {
   //доступ к стору задач  
@@ -123,41 +125,53 @@ export const Timer = observer(() => {
     setNumberBreak(1)
   },[taskActive, timeWork]);
 
-
   //Открытие попапа настроек
   const [settingPopup, setSettingPopup] = useState(false);
-  
-  //const refInputPomodor = useRef<HTMLInputElement>(null);
 
-  // Ограничения ввода в инпуты настроек таймера
+  //Закрытие попапа настроек по esc и клику вне.
+  const refPopupSettings = useRef<HTMLDivElement>(null);
+  useCloseModal(() => {setSettingPopup(false)}, refPopupSettings);
+  
+  //Состояние инпутов настройки таймера
   const [valuePomodor, setValuePomodor] = useState('');
   const [valuePause, setValuePause] = useState('')
 
+  // Ограничения ввода в инпуты настроек таймера
   const MIN = 1;
   const MAX = 59;
 
-  function handleChangePomodor(event: ChangeEvent<HTMLInputElement>) {
-
+  function checkInput(event: ChangeEvent<HTMLInputElement>, setValue: ((arg0: string) => void), handler: ((arg0: number) => void)) {
+    if (isNaN(Number(event.target.value))) {
+      return;
+    }
     if (Number(event.target.value) > MAX) {
-        setValuePomodor('59');      
-        handlerChangeTimeWork(59)} 
+        setValue('59');      
+        handler(59)} 
     else if (Number(event.target.value) < MIN) { 
-        setValuePomodor('1');
-        handlerChangeTimeWork(1)}
-    else {setValuePomodor(event.target.value);
-            handlerChangeTimeWork(Number(event.target.value))}
-    }
-    
-  function handleChangePause(event: ChangeEvent<HTMLInputElement>) {
-    if (Number(event.target.value) >= MIN && Number(event.target.value) <= MAX) {
-        setValuePause(event.target.value);
-    }
+        setValue('');
+        handler(1)}
+    else {setValue(event.target.value);
+          handler(Number(event.target.value))
+        };
   }
 
-  //Переустановка настроек в сторе
+  function handleChangePomodor(event: ChangeEvent<HTMLInputElement>) {   
+    checkInput(event, setValuePomodor, handlerChangeTimeWork);
+  }
+    
+  function handleChangePause(event: ChangeEvent<HTMLInputElement>) {
+    checkInput(event, setValuePause, handlerChangeTimeBreak);
+  }
+
+  //Фиксация  настроек в сторе
   const handlerChangeTimeWork = action((value:number) => {
     tasksStore.timeWork = value;
-    storeTasks('tasksStoreList', tasksStore.list);
+    storeTasks('storeTimeWork', tasksStore.timeWork);
+  })
+
+  const handlerChangeTimeBreak = action((value:number) => {
+    tasksStore.timeBreak = value;
+    storeTasks('storeTimeBreak', tasksStore.timeBreak);
   })
 
   return (
@@ -171,9 +185,10 @@ export const Timer = observer(() => {
         <button onClick={() => {setSettingPopup(!settingPopup)}}>
             <img src={service} alt="Service" />
         </button>
-        {settingPopup && (<div className="timer__settings-popup">
-           <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="number" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus/>Количество минут на 1 помидор</label>
-           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="number" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} />Количество минут на 1 перерыв</label>  
+        {settingPopup && (<div className="timer__settings-popup" ref={refPopupSettings}>
+           <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus pattern="[0-9]{2}" />Количество минут на 1 помидор</label>
+           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="number" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} pattern="[0-9]{2}" />Количество минут на 1 перерыв</label>  
+           <button onClick={() => setSettingPopup(false)}><img src={iconX} alt="Plus" /></button>
         </div>)}
       </div>
       <div className="timer__clock">
@@ -245,7 +260,6 @@ export const Timer = observer(() => {
                     setTime(timeWork);
                     updatePauseList();
                     updatePomodoroList();
-
                     handlerMinus()
                 }}>Сделано</button>
             </div>

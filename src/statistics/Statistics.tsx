@@ -173,7 +173,6 @@ export const Statistics = observer(() => {
           break
       };
 
-
       function getTimeDay(typeEvent:number[][], day:number) {
         return typeEvent.filter((element) => {
           return new Date(element[0]).getDay() === day;        
@@ -234,6 +233,10 @@ export const Statistics = observer(() => {
         if(time === 0) {
           result = <span>0</span>
           } 
+
+        else if (time < 60) {
+          result = <span>{`${Math.floor(time)} сек`}</span>
+        }
         else if (time / 60 / 60 >= 1 && time / 60 % 60 !== 0) {
           result = <span><span>{`${Math.floor((time / 60 / 60))} ч`}</span> <span>{`${Math.round(time / 60 % 60)} мин`}</span></span>
         }
@@ -242,9 +245,7 @@ export const Statistics = observer(() => {
         }
         else if (time / 60 / 60 >= 1 && time / 60 % 60 === 0) {
           result = <span>{`${Math.floor((time / 60 / 60))} ч`}</span>
-        } else {
-          result = <span>{`${time} сек`}</span>
-        }
+        } 
         return result;
       }
 

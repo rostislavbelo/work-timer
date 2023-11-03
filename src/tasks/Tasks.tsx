@@ -26,8 +26,6 @@ export const Tasks= observer(() => {
         <div className="tasks__timer-block">
           {tasksStore.list.length > 0 && (<Timer />)}
         </div>
-
     </section>
-
   );
 })
