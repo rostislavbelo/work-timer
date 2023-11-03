@@ -17,6 +17,11 @@
     height: 24px;  
 }
 
+.header a {
+ transition: opacity linear 0.2s;
+ transform: translateZ(0);
+}
+
 
 .header a.isActive {
     pointer-events: none;

@@ -181,13 +181,13 @@ export const Timer = observer(() => {
         {currentState.includes('working') && (<span className="timer__number">{`Помидор ${numberPomodor}`}</span>)}
         {currentState.includes("break") && (<span className="timer__number">{`Перерыв ${numberBreak}`}</span>)}
       </div>
-      <div className="timer__settings">
+      <div className="timer__settings" ref={refPopupSettings}>
         <button onClick={() => {setSettingPopup(!settingPopup)}}>
             <img src={service} alt="Service" />
         </button>
-        {settingPopup && (<div className="timer__settings-popup" ref={refPopupSettings}>
+        {settingPopup && (<div className="timer__settings-popup">
            <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus pattern="[0-9]{2}" />Количество минут на 1 помидор</label>
-           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="number" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} pattern="[0-9]{2}" />Количество минут на 1 перерыв</label>  
+           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} pattern="[0-9]{2}" />Количество минут на 1 перерыв</label>  
            <button onClick={() => setSettingPopup(false)}><img src={iconX} alt="Plus" /></button>
         </div>)}
       </div>
