@@ -1,7 +1,7 @@
 .statistics {
     background: linear-gradient(#f0eeee, #ffffff 12%);
     min-height: calc(100vh - 70px);
-    padding   : 100px 80px;
+    padding   : 88px 80px 50px;
 }
 
 .statistics__top {
@@ -48,7 +48,7 @@
     line-height: 33px;
     color      : #333333;
     margin-left: auto;
-    width      : 60px;
+    width      : max-content;
 }
 
 .statistics__graph-line::before {
@@ -128,7 +128,7 @@
     width           : 100%;
     background-color: #ECECEC;
     margin-bottom   : 32px;
-    padding         : 20px;
+    padding         : 16px;
 }
 
 .statistics__day-time p {
@@ -250,6 +250,7 @@
 
 .statistics__filter-current-value,
 .statistics__filter button {
+    display         : block;
     background-color: #F4F4F4;
     font-size       : 16px;
     font-weight     : 400;
@@ -260,8 +261,7 @@
     min-height      : 55px;
     border-bottom   : 1px solid #DEDEDE;
     color           : #333333;
-    transition      : background-color linear 0.2s;
-    display         : block;
+    transition      : background-color linear 0.3s, opacity linear 0.2s; 
 }
 
 .statistics__filter {
@@ -273,11 +273,15 @@
 
 .statistics__filter-current-value,
 .statistics__filter button:last-child {
-    border: none;
+    border-color: transparent;
+}
+
+.statistics__filter-current-value:hover {
+    opacity: 0.8;
 }
 
 .statistics__filter button:hover {
-    background-color: #dad2d2;
+    background-color: #e3e3e3;
 }
 
 .statistics__filter svg {

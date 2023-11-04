@@ -32,7 +32,7 @@
 }
 
 .timer__clock {
-    width     : 390px;
+    width     : 420px;
     min-height: 180px;
     margin    : 0 auto 60px auto;
     position  : relative;
@@ -42,7 +42,6 @@
     font-size  : 150px;
     font-weight: 200;
     line-height: unset;
-    text-align : center;
 }
 
 #working .timer__display {
@@ -197,7 +196,7 @@
     position        : absolute;
     background-color: #FFFFFF;
     padding         : 15px 15px 5px 15px;
-    width           : 330px;
+    width           : 345px;
     z-index         : 200000;
     border-radius   : 5px;
     top             : -30px;
