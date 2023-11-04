@@ -38,6 +38,8 @@ export const TaskManager = observer(() => {
       popup: false,
       rename: false,
       delete: false,
+      numberPomodor: 1,
+      numberBreak: 1,
     }];
     if (refInput.current !== null) {
       refInput.current.value = '';
@@ -118,7 +120,7 @@ export const TaskManager = observer(() => {
                     </button>
                     <button onClick={()=>{handlerMinus(l.id)}} className={'pointer'+l.count}>                      
                       {l.count > 1 && (<img src={minus} alt="Minus" />)} 
-                      {l.count === 1 && (<img src={minusGray} alt="Minus no active" />)} 
+                      {(l.count === 1 || l.count === 0) && (<img src={minusGray} alt="Minus no active" />)} 
                       Уменьшить
                     </button>                      
                     <button onClick={() => {handlerRename(l.id)}}>

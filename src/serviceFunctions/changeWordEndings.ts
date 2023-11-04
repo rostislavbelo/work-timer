@@ -1,4 +1,4 @@
-export const changeWordEndings = (num:number, type:{[N:string] : string}) => {
+export const changeWordEndings = (num:number, type:{[N:string]:string}) => {
 let n = num ? num.toString() : '1';
 let last = n.slice(-1);
 let twoLast = n.slice(-2);

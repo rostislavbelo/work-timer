@@ -51,11 +51,17 @@ export const Timer = observer(() => {
     setTime(time + 60);
   }
 
-  //Счетчик помидоров в таймере
-  const [numberPomodor, setNumberPomodor] = useState(1);
+  //Сохранение номера помидора выполняемой задачи
+  const handlerPomodorNumberPlus = action(() => {
+    tasksStore.list[0].numberPomodor = tasksStore.list[0].numberPomodor + 1;
+    storeTasks('tasksStoreList', tasksStore.list);
+  })
 
-  //Счетчик перерывов в таймере
-  const [numberBreak, setNumberBreak] = useState(1);
+  //Сохранение номера паузы выполняемой задачи
+  const handlerBreakNumberPlus = action(() => {
+    tasksStore.list[0].numberBreak = tasksStore.list[0].numberBreak + 1;
+    storeTasks('tasksStoreList', tasksStore.list);
+  })
 
   //Фиксация времени начала/окончания помидоров
     const [startPomodor, setStartPomodor] = useState(0);
@@ -99,20 +105,20 @@ export const Timer = observer(() => {
 
   //Автопереключение помидор/перерыв
   useEffect(() => {
-    if (minCurrent === 0 && secCurrent === 0 && currentState === "working") {
+    if (minCurrent === 0 && secCurrent === 0 && currentState === "working") {        
         setCurrentState("break-active");
         setTime(timeBreak);
-        setNumberPomodor(numberPomodor + 1); 
         updatePomodoroList();
         setTimeout(() => {handlerMinus()}, 100)
+        setTimeout(() => {handlerPomodorNumberPlus()}, 100)
     }
     if (minCurrent === 0 && secCurrent === 0 && currentState === "break-active") {
         setCurrentState("working");
         setTime(timeWork);
-        setNumberBreak(numberBreak + 1);
+        setTimeout(() => {handlerBreakNumberPlus()}, 100);
         recordStartPomodor();
     }
-  },[currentState, updatePomodoroList, minCurrent, numberBreak, numberPomodor, secCurrent, timeBreak, timeWork, statsStore.pomodoroList, handlerMinus]);
+  },[currentState, updatePomodoroList, minCurrent, secCurrent, timeBreak, timeWork, statsStore.pomodoroList, handlerMinus, handlerPomodorNumberPlus, handlerBreakNumberPlus]);
 
   //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при его удалении. 
   let taskActive = tasksStore.list.slice()[0].id;
@@ -121,8 +127,6 @@ export const Timer = observer(() => {
     setTimerStart(false);
     setCurrentState("working-waiting");
     setTime(timeWork);
-    setNumberPomodor(1);
-    setNumberBreak(1)
   },[taskActive, timeWork]);
 
   //Открытие попапа настроек
@@ -178,8 +182,8 @@ export const Timer = observer(() => {
     <div className="timer" id={currentState}>
       <div className="timer__top">
         <span className="timer__title">{tasksStore.list[0].title}</span>
-        {currentState.includes('working') && (<span className="timer__number">{`Помидор ${numberPomodor}`}</span>)}
-        {currentState.includes("break") && (<span className="timer__number">{`Перерыв ${numberBreak}`}</span>)}
+        {currentState.includes('working') && (<span className="timer__number">{`Помидор ${tasksStore.list[0].numberPomodor}`}</span>)}
+        {currentState.includes("break") && (<span className="timer__number">{`Перерыв ${tasksStore.list[0].numberBreak}`}</span>)}
       </div>
       <div className="timer__settings" ref={refPopupSettings}>
         <button onClick={() => {setSettingPopup(!settingPopup)}}>
@@ -253,7 +257,7 @@ export const Timer = observer(() => {
                 }}>Продолжить</button>
                 <button className="timer__btn-ready"
                 onClick={() => {
-                    setNumberPomodor(numberPomodor + 1);
+                    handlerPomodorNumberPlus();
                     setTimerPause(false);
                     setTimerStart(false);
                     setCurrentState("working-waiting");

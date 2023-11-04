@@ -20,7 +20,7 @@ export const tasksStore = () => {
     }    
   }
   return makeAutoObservable({
-    list: taskLocalSave || [] as { title: string; id: number; count: number, popup: boolean, rename: boolean, delete: boolean }[],
+    list: taskLocalSave || [] as { title: string; id: number; count: number, popup: boolean, rename: boolean, delete: boolean, numberPomodor: number, numberBreak: number}[],
     timeWork: timeWorkSave || 25 as number,
     timeBreak: timeBreakSave || 5 as number,
   });

@@ -9,6 +9,8 @@ import { useCloseModal } from "../hooks/useCloseModal";
 import { JSX } from "react/jsx-runtime";
 
 export const Statistics = observer(() => {
+
+  //Текстовые константы
   const FILTER_ITEM_TITLES = [
     "Эта неделя",
     "Прошедшая неделя",
