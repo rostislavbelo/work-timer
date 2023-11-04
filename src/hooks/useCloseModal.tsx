@@ -24,7 +24,7 @@ export function useCloseModal(cb:()=>void, ref:React.RefObject<HTMLElement>) {
         document.removeEventListener('mousedown', handleClick);
         document.addEventListener('keydown', handleKeydownEsc);
     }
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
     
 }
