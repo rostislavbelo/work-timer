@@ -90,11 +90,11 @@
     color       : #999999;
     position    : relative;
     cursor      : pointer;
-    transition: opacity linear 0.2s;
+    transition: color linear 0.2s;
 }
 
 .statistics__line-days div:hover {
-    opacity: 0.8;
+    color: color-mix(in oklab, #999999, rgb(240, 226, 226))
 }
 
 .statistics__line-days div::before {
@@ -105,6 +105,7 @@
     height          : 5px;
     background-color: #C4C4C4;
     top             : -16px;
+    pointer-events: none;
 }
 
 .statistics__line-days div span {
@@ -112,6 +113,10 @@
     bottom          : 40px;
     background-color: #EA8A79;
     width           : 100%;
+}
+
+.statistics__line-days div:hover span {
+    opacity: 1;
 }
 
 .statistics__line-days div[data-active=active] {
