@@ -29,7 +29,7 @@ export const Statistics = observer(() => {
   const [filtrActive, setFilterActive] = useState(false);
 
   //Выбор текущего дня недели
-  const [day, setDay] = useState('Понедельник');
+  const [day, setDay] = useState('');
   
   //Количество рабочего времени в день
   const [timeWork, setTimeWork] = useState(<div>Нет данных</div>);
@@ -55,7 +55,7 @@ export const Statistics = observer(() => {
   //Количество остановок
   const [stopCount, setStopCount] = useState(0);
 
-  //Ативное сосотояние поля Фокус
+  //Ативное сосотояние полей Фокус, Пауза, Стоп
   const [focusActive, setFocusActive] = useState('');
   const [pauseActive, setPauseActive] = useState('');
   const [stopActive, setStopActive] = useState('');
@@ -68,7 +68,6 @@ export const Statistics = observer(() => {
   const [lineTwo, setLineTwo] = useState(<span>0</span>);
   const [lineThree, setLineThree] = useState(<span>0</span>);
   const [lineFour, setLineFour] = useState(<span>0</span>);
-
 
   //Стор статистики
   const { statsStore } = useStore();
@@ -111,16 +110,18 @@ export const Statistics = observer(() => {
     function getWeeksGroops(list: [number, number][]) {      
 
       function filterWeeks() {
-        return {thisWeek: list.filter((element) => {return element[0] > data}), 
+        return {
+        thisWeek: list.filter((element) => {return element[0] > data}), 
         lastWeek: list.filter((element) => {return element[0] < data && element[0] > data - MS_DAY * 7}),
-        beforeLastWeek: list.filter((element) => {return element[0] < data - MS_DAY * 7 && element[0] > data - MS_DAY * 14})};
+        beforeLastWeek: list.filter((element) => {return element[0] < data - MS_DAY * 7 && element[0] > data - MS_DAY * 14})
+        };
       }
 
       let data:number;
 
       switch (dayWeekToday) {
         case 1:
-          data = Date.now();
+          data = yesterday;
           return filterWeeks()
         case 2:
           data = yesterday - MS_DAY;
