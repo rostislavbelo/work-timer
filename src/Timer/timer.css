@@ -157,7 +157,7 @@
 
 .timer__settings-popup label {
     display      : block;
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     font-size    : 16px;
     font-weight  : 400;
     line-height  : 17px;
@@ -196,7 +196,7 @@
     position        : absolute;
     background-color: #FFFFFF;
     padding         : 15px 15px 5px 15px;
-    width           : 345px;
+    width           : 310px;
     z-index         : 200000;
     border-radius   : 5px;
     top             : -30px;

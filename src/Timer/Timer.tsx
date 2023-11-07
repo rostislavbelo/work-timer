@@ -22,6 +22,9 @@ export const Timer = observer(() => {
   //Значение типового времени перерыва в секундах
   let timeBreak = tasksStore.timeBreak * 60;
 
+  //Значение типового времени большого перерыва в секундах
+  let timeBigBreak = tasksStore.timeBigBreak * 60;
+
   let [timerPause, setTimerPause] = useState(false);
   const [timerStart, setTimerStart] = useState(false);
   const [time, setTime] = useState(timeWork);
@@ -107,7 +110,9 @@ export const Timer = observer(() => {
   useEffect(() => {
     if (minCurrent === 0 && secCurrent === 0 && currentState === "working") {        
         setCurrentState("break-active");
-        setTime(timeBreak);
+        if (tasksStore.list[0].numberBreak % 4 === 0) {
+          setTime(timeBigBreak);
+        } else setTime(timeBreak);        
         updatePomodoroList();
         setTimeout(() => {handlerMinus()}, 100)
         setTimeout(() => {handlerPomodorNumberPlus()}, 100)
@@ -118,7 +123,7 @@ export const Timer = observer(() => {
         setTimeout(() => {handlerBreakNumberPlus()}, 100);
         recordStartPomodor();
     }
-  },[currentState, updatePomodoroList, minCurrent, secCurrent, timeBreak, timeWork, statsStore.pomodoroList, handlerMinus, handlerPomodorNumberPlus, handlerBreakNumberPlus]);
+  },[currentState, updatePomodoroList, minCurrent, secCurrent, timeBreak, timeWork, statsStore.pomodoroList, handlerMinus, handlerPomodorNumberPlus, handlerBreakNumberPlus, tasksStore.list, timeBigBreak]);
 
   //Фиксируем id первого (активного) помидора и обнуляем всё в таймере при его удалении. 
   let taskActive = tasksStore.list.slice()[0].id;
@@ -138,7 +143,8 @@ export const Timer = observer(() => {
   
   //Состояние инпутов настройки таймера
   const [valuePomodor, setValuePomodor] = useState('');
-  const [valuePause, setValuePause] = useState('')
+  const [valuePause, setValuePause] = useState('');
+  const [valueBigPause, setValueBigPause] = useState('');
 
   // Ограничения ввода в инпуты настроек таймера
   const MIN = 1;
@@ -167,6 +173,10 @@ export const Timer = observer(() => {
     checkInput(event, setValuePause, handlerChangeTimeBreak);
   }
 
+  function handleChangeBigPause(event: ChangeEvent<HTMLInputElement>) {
+    checkInput(event, setValueBigPause, handlerChangeTimeBigBreak);
+  }
+
   //Фиксация  настроек в сторе
   const handlerChangeTimeWork = action((value:number) => {
     tasksStore.timeWork = value;
@@ -176,6 +186,11 @@ export const Timer = observer(() => {
   const handlerChangeTimeBreak = action((value:number) => {
     tasksStore.timeBreak = value;
     storeTasks('storeTimeBreak', tasksStore.timeBreak);
+  })
+
+  const handlerChangeTimeBigBreak = action((value:number) => {
+    tasksStore.timeBigBreak = value;
+    storeTasks('storeTimeBigBreak', tasksStore.timeBigBreak);
   })
 
   return (
@@ -190,8 +205,9 @@ export const Timer = observer(() => {
             <img src={service} alt="Service" />
         </button>
         {settingPopup && (<div className="timer__settings-popup">
-           <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus pattern="[0-9]{2}" />Количество минут на 1 помидор</label>
-           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} pattern="[0-9]{2}" />Количество минут на 1 перерыв</label>  
+           <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus pattern="[0-9]{2}" />Время на 1 помидор</label>
+           <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} pattern="[0-9]{2}" />Время короткого перерыва</label>
+           <label><input value={valueBigPause} placeholder={String(tasksStore.timeBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangeBigPause} pattern="[0-9]{2}" />Время большого перерыва</label>   
            <button onClick={() => setSettingPopup(false)}><img src={iconX} alt="Plus" /></button>
         </div>)}
       </div>
