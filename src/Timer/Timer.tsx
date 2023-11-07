@@ -207,7 +207,7 @@ export const Timer = observer(() => {
         {settingPopup && (<div className="timer__settings-popup">
            <label><input value={valuePomodor} placeholder={String(tasksStore.timeWork)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePomodor} autoFocus pattern="[0-9]{2}" />Время на 1 помидор</label>
            <label><input value={valuePause} placeholder={String(tasksStore.timeBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangePause} pattern="[0-9]{2}" />Время короткого перерыва</label>
-           <label><input value={valueBigPause} placeholder={String(tasksStore.timeBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangeBigPause} pattern="[0-9]{2}" />Время большого перерыва</label>   
+           <label><input value={valueBigPause} placeholder={String(tasksStore.timeBigBreak)} type="text" maxLength={2} title="Число от 1 до 59" onChange={handleChangeBigPause} pattern="[0-9]{2}" />Время большого перерыва</label>   
            <button onClick={() => setSettingPopup(false)}><img src={iconX} alt="Plus" /></button>
         </div>)}
       </div>
