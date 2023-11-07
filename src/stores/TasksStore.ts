@@ -21,7 +21,7 @@ export const tasksStore = () => {
       timeBreakSave = JSON.parse(storageTimeBreak);
     } 
     if (storageTimeBigBreak) {
-      timeBreakSave = JSON.parse(storageTimeBigBreak);
+      timeBigBreakSave = JSON.parse(storageTimeBigBreak);
     }          
   }
   return makeAutoObservable({
