@@ -3,7 +3,7 @@ import { Layout } from "./Layout";
 import { Header } from "./Header";
 import { Tasks } from "./tasks";
 import { Statistics } from "./statistics";
-import { BrowserRouter, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
@@ -12,10 +12,10 @@ function App() {
         <Header />
         <main>
           <Routes>
-            <Route path="/" element={<Tasks />} />    
-            <Route path="/stats/" element={<Statistics />} />  
-          </Routes> 
-        </main>   
+            <Route path="/" element={<Tasks />} />
+            <Route path="/stats/" element={<Statistics />} />
+          </Routes>
+        </main>
       </BrowserRouter>
     </Layout>
   );

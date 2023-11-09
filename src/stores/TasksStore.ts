@@ -19,13 +19,13 @@ export const tasksStore = () => {
     }
     if (storageTimeBreak) {
       timeBreakSave = JSON.parse(storageTimeBreak);
-    } 
+    }
     if (storageTimeBigBreak) {
       timeBigBreakSave = JSON.parse(storageTimeBigBreak);
-    }          
+    }
   }
   return makeAutoObservable({
-    list: taskLocalSave || [] as { title: string; id: number; count: number, popup: boolean, rename: boolean, delete: boolean, numberPomodor: number, numberBreak: number}[],
+    list: taskLocalSave || [] as { title: string; id: number | string; count: number, popup: boolean, rename: boolean, delete: boolean, numberPomodor: number, numberBreak: number }[],
     timeWork: timeWorkSave || 25 as number,
     timeBreak: timeBreakSave || 5 as number,
     timeBigBreak: timeBigBreakSave || 15 as number,

@@ -30,7 +30,7 @@ export const Statistics = observer(() => {
 
   //Выбор текущего дня недели
   const [day, setDay] = useState('');
-  
+
   //Количество рабочего времени в день
   const [timeWork, setTimeWork] = useState(<div>Нет данных</div>);
 
@@ -74,50 +74,50 @@ export const Statistics = observer(() => {
 
   //Закрытие фильтра по клику вне и esc
   let refFilter = useRef(null);
-  useCloseModal(() => {setFilterActive(false)},refFilter)
+  useCloseModal(() => { setFilterActive(false) }, refFilter)
 
   useEffect(() => {
     //Текстовые константы
     const DAYS = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Cуббота'];
 
-     const MINUTES_WORD = {
+    const MINUTES_WORD = {
       firstState: 'минут',
       secondState: 'минуты',
       thirdState: 'минут',
       fourthState: 'минут',
     }
-  
+
     const HOURS_WORD = {
       firstState: 'часов',
       secondState: 'часа',
       thirdState: 'часов',
       fourthState: 'часов',
     }
-    
+
     //Сегодня
     let today = new Date();
 
     //Выделяем край вчерашнего дня - 23.59.59.999
-    let yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate()-1, 23, 59, 59, 999).getTime();
+    let yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1, 23, 59, 59, 999).getTime();
 
     //Сегодняшний номер дня недели
-    let dayWeekToday =  today.getDay();
+    let dayWeekToday = today.getDay();
 
     //Сутки в миллисекундах 
-    const MS_DAY = 86400000;    
+    const MS_DAY = 86400000;
 
     //Получение обекта с недельными массивами: эта неделя, прошлая, позапрошлая
-    function getWeeksGroops(list: [number, number][]) {      
+    function getWeeksGroops(list: [number, number][]) {
 
       function filterWeeks() {
         return {
-        thisWeek: list.filter((element) => {return element[0] > data}), 
-        lastWeek: list.filter((element) => {return element[0] < data && element[0] > data - MS_DAY * 7}),
-        beforeLastWeek: list.filter((element) => {return element[0] < data - MS_DAY * 7 && element[0] > data - MS_DAY * 14})
+          thisWeek: list.filter((element) => { return element[0] > data }),
+          lastWeek: list.filter((element) => { return element[0] < data && element[0] > data - MS_DAY * 7 }),
+          beforeLastWeek: list.filter((element) => { return element[0] < data - MS_DAY * 7 && element[0] > data - MS_DAY * 14 })
         };
       }
 
-      let data:number;
+      let data: number;
 
       switch (dayWeekToday) {
         case 1:
@@ -130,17 +130,17 @@ export const Statistics = observer(() => {
           data = yesterday - MS_DAY * 2;
           return filterWeeks()
         case 4:
-          data = yesterday - MS_DAY * 3;  
+          data = yesterday - MS_DAY * 3;
           return filterWeeks()
         case 5:
-          data = yesterday - MS_DAY * 4; 
+          data = yesterday - MS_DAY * 4;
           return filterWeeks()
         case 6:
-          data = yesterday - MS_DAY * 5; 
+          data = yesterday - MS_DAY * 5;
           return filterWeeks()
         case 0:
-          data = yesterday - MS_DAY * 6; 
-          return filterWeeks()                                      
+          data = yesterday - MS_DAY * 6;
+          return filterWeeks()
       }
     }
 
@@ -149,25 +149,25 @@ export const Statistics = observer(() => {
     let listPomodors = getWeeksGroops(statsStore.pomodoroList);
     let listPauses = getWeeksGroops(statsStore.pauseList);
     let listStop = getWeeksGroops(statsStore.stopList);
-  
+
     function getWorkTimeDay() {
       if (!listPomodors || !listPauses || !listStop) return;
       let resultWorkTime = 0;
       let resultPausesTime = 0;
-      let currentWeekPomodors =  listPomodors.thisWeek; 
-      let currentWeekPauses =  listPauses.thisWeek; 
-      let currentWeekStop =  listStop.thisWeek; 
+      let currentWeekPomodors = listPomodors.thisWeek;
+      let currentWeekPauses = listPauses.thisWeek;
+      let currentWeekStop = listStop.thisWeek;
 
       switch (selectWeek) {
         case 'thisWeek':
           currentWeekPomodors = listPomodors.thisWeek;
           currentWeekPauses = listPauses.thisWeek;
-          currentWeekStop = listStop.thisWeek; 
+          currentWeekStop = listStop.thisWeek;
           break
         case 'lastWeek':
           currentWeekPomodors = listPomodors.lastWeek;
           currentWeekPauses = listPauses.lastWeek;
-          currentWeekStop = listStop.lastWeek; 
+          currentWeekStop = listStop.lastWeek;
           break
         case 'beforeLastWeek':
           currentWeekPomodors = listPomodors.beforeLastWeek;
@@ -176,9 +176,9 @@ export const Statistics = observer(() => {
           break
       };
 
-      function getTimeDay(typeEvent:number[][], day:number) {
+      function getTimeDay(typeEvent: number[][], day: number) {
         return typeEvent.filter((element) => {
-          return new Date(element[0]).getDay() === day;        
+          return new Date(element[0]).getDay() === day;
         });
       };
 
@@ -193,26 +193,26 @@ export const Statistics = observer(() => {
 
       if (stopToday.length > 0 && !isNaN(stopToday.length)) {
         setStopActive('active');
-      } else {setStopActive('no-active')};
+      } else { setStopActive('no-active') };
 
-        workToday.forEach((element) => {
+      workToday.forEach((element) => {
         resultWorkTime = resultWorkTime + (element[1] - element[0]);
       });
 
-      
-      let valuesTimeWork:number[] = [];
+
+      let valuesTimeWork: number[] = [];
 
       //Вычисляем продолжительность рабочего времени для одного дня
-      function getListValuesWeek(i:number) {
-        let valueTimeDay:number = 0;
+      function getListValuesWeek(i: number) {
+        let valueTimeDay: number = 0;
         getTimeDay(currentWeekPomodors, i).forEach((element) => {
           valueTimeDay = valueTimeDay + (element[1] - element[0]);
         });
         return valueTimeDay;
-      }      
+      }
 
       //Формируем массив значений времени для каждого дня текущей недели
-      for (let i:number = 0; i <= 6; i++) {
+      for (let i: number = 0; i <= 6; i++) {
         valuesTimeWork.push(getListValuesWeek(i))
       };
 
@@ -222,7 +222,7 @@ export const Statistics = observer(() => {
       //Получаем значение высоты элементов диаграммы. 
       function getHeightElement() {
         if (isNaN(maxValueWork) || maxValueWork === 0) return [0, 0, 0, 0, 0, 0, 0];
-        let heightElementDiagramm = valuesTimeWork.map((element) => {return Math.round(349 * (1 / (maxValueWork / (element / 1000))))}) || [0,0,0,0,0,0,0];
+        let heightElementDiagramm = valuesTimeWork.map((element) => { return Math.round(349 * (1 / (maxValueWork / (element / 1000)))) }) || [0, 0, 0, 0, 0, 0, 0];
         return heightElementDiagramm;
       }
 
@@ -230,12 +230,12 @@ export const Statistics = observer(() => {
       setHeightElemen(getHeightElement());
 
       //Формируем масштабируемые подписи к линиям диаграммы
-      function getValueDiagrammLine(time:number) {
+      function getValueDiagrammLine(time: number) {
         if (!maxValueWork) return <span>0</span>;
-        let result = <span>0</span>;  
-        if(time === 0) {
+        let result = <span>0</span>;
+        if (time === 0) {
           result = <span>0</span>
-          } 
+        }
 
         else if (time < 60) {
           result = <span>{`${Math.floor(time)} сек`}</span>
@@ -248,10 +248,9 @@ export const Statistics = observer(() => {
         }
         else if (time / 60 / 60 >= 1 && time / 60 % 60 === 0) {
           result = <span>{`${Math.floor((time / 60 / 60))} ч`}</span>
-        } 
+        }
         return result;
       }
-
 
       function getValueLineDiagramm() {
         const intervals = [maxValueWork, maxValueWork * 0.75, maxValueWork * 0.5, maxValueWork * 0.25];
@@ -270,45 +269,45 @@ export const Statistics = observer(() => {
 
       getValueLineDiagramm();
 
-        
+
       //Максимальный неучитываемый размер паузы в мс, паузы короче 3сек не учитываем в расчёте фокуса.  
       const pauseLimit = 3000;
       //Расчитываем время пауз
       pauseToday.forEach((element) => {
         if (element[1] - element[0] > pauseLimit) {
-        resultPausesTime = resultPausesTime + (element[1] - element[0]);
+          resultPausesTime = resultPausesTime + (element[1] - element[0]);
         }
       });
 
       let totalTime = resultPausesTime + resultWorkTime;
-      
+
       let calculateFocus = Math.round((1 / (totalTime / resultWorkTime) * 100)) || 0;
 
       if (Math.round(resultPausesTime / 1000 / 60) >= 1 && !isNaN(resultPausesTime)) {
         setPauseActive('active');
-      } else {setPauseActive('no-active')};
+      } else { setPauseActive('no-active') };
 
       setFocus(calculateFocus);
-      if(!isNaN(calculateFocus) && calculateFocus > 0) {
+      if (!isNaN(calculateFocus) && calculateFocus > 0) {
         setFocusActive('active');
-       } else {setFocusActive('no-active');}
+      } else { setFocusActive('no-active'); }
 
       setTimePause(resultPausesTime / 1000);
 
       setCoumtPomodor(workToday.length);
 
-      return resultWorkTime;      
+      return resultWorkTime;
     };
-   
+
     function getStringWorkTime() {
       let getTime = getWorkTimeDay();
       if (!getTime) return <div>Нет данных</div>;
       let time = getTime / 1000;
       let result = <div>Нет данных</div>;
 
-      if(time === 0) {
+      if (time === 0) {
         result = <div>Нет данных</div>
-        } 
+      }
       if (time / 60 / 60 >= 1 && time / 60 % 60 !== 0) {
         result = <div>Вы работали над задачами в течение <span>{changeWordEndings(Math.floor((time / 60 / 60)), HOURS_WORD)}</span> <span>{changeWordEndings(Math.round(time / 60 % 60), MINUTES_WORD)}</span></div>
       }
@@ -340,33 +339,38 @@ export const Statistics = observer(() => {
 
     setTimePauseText(getStringPause());
 
-  },[selectDay, selectWeek, statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList, timePause]);
-
+  }, [selectDay, selectWeek, statsStore.pauseList, statsStore.pomodoroList, statsStore.stopList, timePause]);
 
   return (
     <section className="statistics">
       <div className="statistics__top">
         <h1>Ваша активность</h1>
-        <div className="statistics__filter" id={String(filtrActive)} onClick={() => {setFilterActive(!filtrActive)}} ref={refFilter}>
+        <div className="statistics__filter" id={String(filtrActive)} onClick={() => { setFilterActive(!filtrActive) }} ref={refFilter}>
           <svg width="16" height="10" viewBox="0 0 16 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 9L8 2L15 9" stroke="#B7280F" strokeWidth="2"/>
+            <path d="M1 9L8 2L15 9" stroke="#B7280F" strokeWidth="2" />
           </svg>
           <span className="statistics__filter-current-value">{filtrCurrentValue}</span>
           {filtrActive && (<div className="statistics__filter-list">
-            <button className="statistics__filter-btn" 
-              onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[0]); 
-              setSelectWeek('thisWeek')}}>
-                {FILTER_ITEM_TITLES[0]}
+            <button className="statistics__filter-btn"
+              onClick={() => {
+                setFilterCurrentValue(FILTER_ITEM_TITLES[0]);
+                setSelectWeek('thisWeek');
+              }}>
+              {FILTER_ITEM_TITLES[0]}
             </button>
-            <button className="statistics__filter-btn" 
-              onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[1]); 
-              setSelectWeek('lastWeek')}}>
-                {FILTER_ITEM_TITLES[1]}
+            <button className="statistics__filter-btn"
+              onClick={() => {
+                setFilterCurrentValue(FILTER_ITEM_TITLES[1]);
+                setSelectWeek('lastWeek');
+              }}>
+              {FILTER_ITEM_TITLES[1]}
             </button>
-            <button className="statistics__filter-btn" 
-              onClick={() => {setFilterCurrentValue(FILTER_ITEM_TITLES[2]); 
-              setSelectWeek('beforeLastWeek')}}>
-                {FILTER_ITEM_TITLES[2]}
+            <button className="statistics__filter-btn"
+              onClick={() => {
+                setFilterCurrentValue(FILTER_ITEM_TITLES[2]);
+                setSelectWeek('beforeLastWeek');
+              }}>
+              {FILTER_ITEM_TITLES[2]}
             </button>
           </div>)}
         </div>
@@ -391,16 +395,16 @@ export const Statistics = observer(() => {
         <div className="statistics__graph">
           <div className="statistics__graph-line statistics__graph-line-1">{lineOne}</div>
           <div className="statistics__graph-line statistics__graph-line-2"><span>{lineTwo}</span></div>
-        <div className="statistics__graph-line statistics__graph-line-3"><span>{lineThree}</span></div>
+          <div className="statistics__graph-line statistics__graph-line-3"><span>{lineThree}</span></div>
           <div className="statistics__graph-line statistics__graph-line-4"><span>{lineFour}</span></div>
           <div className="statistics__line-days">
-            <div onClick={() => {setSelectDay(1)}} data-active={selectDay === 1 ? 'active' : ''}>Пн<span style={{height:heightElement[1] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(2)}} data-active={selectDay === 2 ? 'active' : ''}>Вт<span style={{height:heightElement[2] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(3)}} data-active={selectDay === 3 ? 'active' : ''}>Ср<span style={{height:heightElement[3] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(4)}} data-active={selectDay === 4 ? 'active' : ''}>Чт<span style={{height:heightElement[4] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(5)}} data-active={selectDay === 5 ? 'active' : ''}>Пт<span style={{height:heightElement[5] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(6)}} data-active={selectDay === 6 ? 'active' : ''}>Сб<span style={{height:heightElement[6] + 'px'}}></span></div>
-            <div onClick={() => {setSelectDay(0)}} data-active={selectDay === 0 ? 'active' : ''}>Вс<span style={{height:heightElement[0] + 'px'}}></span></div>            
+            <div onClick={() => { setSelectDay(1) }} data-active={selectDay === 1 ? 'active' : ''}>Пн<span style={{ height: heightElement[1] + 'px' }}></span></div>
+            <div onClick={() => { setSelectDay(2) }} data-active={selectDay === 2 ? 'active' : ''}>Вт<span style={{ height: heightElement[2] + 'px' }}></span></div>
+            <div onClick={() => { setSelectDay(3) }} data-active={selectDay === 3 ? 'active' : ''}>Ср<span style={{ height: heightElement[3] + 'px' }}></span></div>
+            <div onClick={() => { setSelectDay(4) }} data-active={selectDay === 4 ? 'active' : ''}>Чт<span style={{ height: heightElement[4] + 'px' }}></span></div>
+            <div onClick={() => { setSelectDay(5) }} data-active={selectDay === 5 ? 'active' : ''}>Пт<span style={{ height: heightElement[5] + 'px' }}></span></div>
+            <div onClick={() => { setSelectDay(6) }} data-active={selectDay === 6 ? 'active' : ''}>Сб<span style={{ height: heightElement[6] + 'px' }}></span></div>
+            <div onClick={() => { setSelectDay(0) }} data-active={selectDay === 0 ? 'active' : ''}>Вс<span style={{ height: heightElement[0] + 'px' }}></span></div>
           </div>
         </div>
       </div>
@@ -411,9 +415,9 @@ export const Statistics = observer(() => {
             <span>{focus}%</span>
           </div>
           <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M64.5 102C85.2107 102 102 85.2107 102 64.5C102 43.7893 85.2107 27 64.5 27C43.7893 27 27 43.7893 27 64.5C27 85.2107 43.7893 102 64.5 102Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M64.5 85C75.8218 85 85 75.8218 85 64.5C85 53.1782 75.8218 44 64.5 44C53.1782 44 44 53.1782 44 64.5C44 75.8218 53.1782 85 64.5 85Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M64.5 102C85.2107 102 102 85.2107 102 64.5C102 43.7893 85.2107 27 64.5 27C43.7893 27 27 43.7893 27 64.5C27 85.2107 43.7893 102 64.5 102Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M64.5 85C75.8218 85 85 75.8218 85 64.5C85 53.1782 75.8218 44 64.5 44C53.1782 44 44 53.1782 44 64.5C44 75.8218 53.1782 85 64.5 85Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
 
         </div>
@@ -423,18 +427,18 @@ export const Statistics = observer(() => {
             <span>{timePauseText}</span>
           </div>
           <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M64.3154 37.1579V64.3158L77.8944 77.8947" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M64.3154 37.1579V64.3158L77.8944 77.8947" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <div className="statistics__bottom-item stop-count"  id={stopActive}>
+        <div className="statistics__bottom-item stop-count" id={stopActive}>
           <div>
             <p>Остановки</p>
             <span>{stopCount}</span>
           </div>
           <svg width="129" height="129" viewBox="0 0 129 129" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M28 27L102 101" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M64.3158 118.632C94.3136 118.632 118.632 94.3136 118.632 64.3158C118.632 34.318 94.3136 10 64.3158 10C34.318 10 10 34.318 10 64.3158C10 94.3136 34.318 118.632 64.3158 118.632Z" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M28 27L102 101" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
