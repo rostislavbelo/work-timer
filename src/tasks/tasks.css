@@ -1,8 +1,8 @@
 .tasks {
-    background: linear-gradient(#f0eeee, #ffffff 12%);
-    min-height: calc(100vh - 70px);
-    padding   : 100px 80px;
-    display: flex;
+    background     : linear-gradient(#f0eeee, #ffffff 12%);
+    min-height     : calc(100vh - 70px);
+    padding        : 100px 80px;
+    display        : flex;
     justify-content: space-between;
 }
 
@@ -13,11 +13,11 @@
 }
 
 .tasks__instructions li {
-    position      : relative;
-    font-size     : 16px;
-    font-weight   : 400;
-    line-height   : 33px;
-    color:           #333333;
+    position   : relative;
+    font-size  : 16px;
+    font-weight: 400;
+    line-height: 33px;
+    color      : #333333;
 }
 
 .tasks__instructions li::after {
@@ -37,7 +37,7 @@
     font-weight: 700;
     line-height: 33px;
     margin     : 0 0 15px 0;
-    color:  #333333;
+    color      : #333333;
 }
 
 .tasks__task-block {
@@ -46,7 +46,17 @@
 
 .tasks__timer-block {
     background-color: #F4F4F4;
-    width: 57%;
-    height: min-content;
-    min-height: 507px;
+    width           : 57%;
+    height          : min-content;
+    min-height      : 507px;
+    position        : relative;
+}
+
+.tasks__timer-block::before {
+    position  : absolute;
+    padding   : 70px 50px;
+    content   : "Уже можно добавить сюда новую задачу!";
+    text-align: center;
+    font-size : 40px;
+    color     : #333333;
 }
